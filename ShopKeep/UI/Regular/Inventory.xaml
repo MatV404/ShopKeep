@@ -1,0 +1,240 @@
+﻿<Page
+    x:Class="ShopKeep.UI.Regular.Inventory"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ShopKeep.UI.Regular"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:ShopKeepDB.Models"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource BackgroundColor}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0"
+                   Grid.Column="3" 
+                   Grid.ColumnSpan="2" 
+                   FontSize="32"
+                   FontWeight="Bold"
+                   Foreground="{ThemeResource HeadingColor}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Text="{x:Bind CurrentUser.Name}" />
+        <TextBlock Grid.Row="1"
+                   Grid.Column="3"
+                   Grid.ColumnSpan="2" 
+                   FontSize="25"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom">Items</TextBlock>
+        <controls:NumberBox Grid.Row="2"
+                 Grid.Column="2" 
+                 Header="Gold"
+                 Name="GoldBox"
+                 FontSize="25"
+                 Width="200"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Stretch" />
+        <controls:NumberBox Grid.Row="3"
+                 Grid.Column="2"
+                 Header="Silver"
+                 Name="SilverBox"
+                 FontSize="25"
+                 Width="200"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Stretch" />
+        <controls:NumberBox Grid.Row="4"
+                 Grid.Column="2"
+                 Header="Copper"
+                 Name="CopperBox"
+                 FontSize="25"
+                 Width="200"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Stretch" />
+        <Button Grid.Column="2"
+                Grid.Row="5" 
+                FontSize="25"
+                Width="200"
+                Height="80" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Name="ChangeBalanceButton"
+                Click="ChangeBalanceClick">Change Balance</Button>
+        <controls:NumberBox Grid.Row="7"
+                 Grid.Column="2" 
+                 Header="Item Amount"
+                 Name="ItemAmountBox"
+                 FontSize="25"
+                 Width="200"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Left" />
+        <Button Grid.Row="8"
+                Grid.Column="2" FontSize="25"
+                Width="200"
+                Height="80" 
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Name="RemoveItemButton"
+                Click="RemoveItemClickAsync">Remove Item(s)</Button>
+        <ListView Grid.Row="2"
+                  Grid.Column="3"
+                  Grid.RowSpan="7"
+                  Grid.ColumnSpan="2" 
+                  Background="{ThemeResource InteractiveElementColor}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  SelectionMode="Multiple"
+                  Name="InventoryView"
+                  ItemsSource="{x:Bind InventoryItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:UserItem">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="290" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" 
+                                   FontSize="25" 
+                                   Text="{x:Bind ItemId}"/>
+                        <TextBlock Grid.Column="1" 
+                                   FontSize="25" 
+                                   Text="{x:Bind Item.Name}" />
+                        <TextBlock Grid.Column="2" 
+                                   FontSize="25"
+                                   Text="{x:Bind Amount}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBox Grid.Row="2"
+                 Grid.Column="5" Name="ItemNameBox"
+                 Header="Item Name"
+                 FontSize="25"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Right"
+                 Width="200" />
+        <ComboBox Grid.Row="3"
+                  Grid.Column="5" 
+                  Name="ItemRarityBox"
+                  Header="Item Rarity"
+                  FontSize="25"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Right"
+                  Width="200" 
+                  ItemsSource="{x:Bind Rarities}"/>
+        <ComboBox Grid.Row="4"
+                  Grid.Column="5" 
+                  Name="ItemTypeBox"
+                  Header="Item Type"
+                  FontSize="25"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Right"
+                  Width="200"
+                  ItemsSource="{x:Bind Types}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate >
+                    <TextBlock Text="{Binding Name}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Grid.Column="5"
+                Grid.Row="5" HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="200"
+                Height="80"
+                FontSize="25"
+                Click="FilterItemsClickAsync">Filter Items</Button>
+        <Button Grid.Row="6"
+                Grid.Column="5" 
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="200"
+                Height="80"
+                FontSize="25"
+                Click="ClearFilterClick">Clear Filter</Button>
+        <TextBlock Grid.Row="9"
+                   Grid.Column="3" 
+                   FontSize="25"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top">Current Gold:</TextBlock>
+        <TextBlock Grid.Row="9"
+                   Grid.Column="4"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Text="{x:Bind CurrentUser.Coins.Gold}" />
+        <TextBlock Grid.Row="9"
+                   Grid.Column="3"
+                   FontSize="25"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center">Current Silver:</TextBlock>
+        <TextBlock Grid.Row="9"
+                   Grid.Column="4"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Text="{x:Bind CurrentUser.Coins.Silver}" />
+        <TextBlock Grid.Row="9"
+                   Grid.Column="3"
+                   FontSize="25"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom">Current Copper:</TextBlock>
+        <TextBlock Grid.Row="9"
+                   Grid.Column="4"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Text="{x:Bind CurrentUser.Coins.Copper}" />
+        <Button Grid.Row="9"
+                Grid.Column="5" VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Width="200"
+                Height="80"
+                FontSize="25"
+                Click="BackToMenu">Back</Button>
+        <Button Grid.Row="7"
+                Grid.Column="5" 
+                FontSize="25"
+                Width="200"
+                Height="80"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Foreground="White"
+                Background="DarkRed"
+                Name="BanButton"
+                Click="BanUser">Ban User</Button>
+        <Button Grid.Row="8"
+                Grid.Column="5"
+                FontSize="25"
+                Width="200"
+                Height="80"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Foreground="White"
+                Background="DarkRed"
+                Name="UnbanButton"
+                Click="UnbanUser">Unban User</Button>
+    </Grid>
+</Page>

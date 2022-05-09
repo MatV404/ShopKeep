@@ -1,0 +1,146 @@
+﻿<Page
+    x:Class="ShopKeep.UI.Item.CreateItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:ShopKeepDB.Models"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource BackgroundColor}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="450" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="210" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   Grid.ColumnSpan="2"
+                   FontSize="32"
+                   FontWeight="Bold"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Left"
+                   Foreground="{ThemeResource HeadingColor}">Item Creation</TextBlock>
+
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 FontSize="20"
+                 Name="ItemNameBox"
+                 Header="Item Name"
+                 Width="200"
+                 Height="80"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Bottom"/>
+
+        <controls:NumberBox Grid.Row="1" 
+                            Grid.Column="2"
+                            Name="ItemPriceGoldBox"
+                            Header="Item Price: Gold"
+                            FontSize="20"
+                            Width="200"
+                            PlaceholderText="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Height="80"></controls:NumberBox>
+
+        <controls:NumberBox Name="ItemPriceSilverBox"
+                            Header="Item Price: Silver"
+                            FontSize="20"
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
+                            Width="200"
+                            PlaceholderText="0"/>
+
+        <controls:NumberBox Name="ItemPriceCopperBox"
+                            Header="Item Price: Copper"
+                            FontSize="20"
+                            Grid.Row="1"
+                            Grid.Column="4"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
+                            Width="200"
+                            Height="80"
+                            PlaceholderText="0"></controls:NumberBox>
+
+        <ComboBox Grid.Row="1"
+                  Grid.Column="5"
+                  FontSize="20"
+                  Name="ItemRarityBox"
+                  Header="Item Rarity"
+                  Width="200"
+                  Height="80"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Bottom"
+                  ItemsSource="{x:Bind Rarities}"/>
+
+        <TextBox Grid.Row="2"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="4"
+                 Name="ItemDescriptionBox"
+                 Header="Item Description"
+                 PlaceholderText="Item Description"
+                 FontSize="20"
+                 Width="800"
+                 Height="400"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"></TextBox>
+
+        <Button Grid.Row="1"
+                Grid.Column="6"
+                Click="CreateClick"
+                VerticalAlignment="Bottom"
+                Width="200"
+                Height="50"
+                FontSize="20"
+                HorizontalAlignment="Left">Create Item</Button>
+
+        <TextBlock Grid.Row="2" 
+                   Grid.Column="5"
+                   Grid.ColumnSpan="2"
+                   FontSize="20"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   >Item Types</TextBlock>
+
+        <ListView Grid.Column="5"
+                  Grid.Row="2" 
+                  Grid.ColumnSpan="2"
+                  Height="400"
+                  Name="ItemTypes" 
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  SelectionMode="Multiple"
+                  ItemsSource="{x:Bind Types}"
+                  Background="{ThemeResource InteractiveElementColor}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Type">
+                    <TextBlock Text="{x:Bind Name}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Grid.Row="3"
+                Grid.Column="6"
+                Width="200"
+                Height="50"
+                FontSize="20"
+                Click="BackToMenu"
+                VerticalAlignment="Top">Back</Button>
+    </Grid>
+</Page>

@@ -1,0 +1,184 @@
+﻿<Page
+    x:Class="ShopKeep.UI.Item.Items"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ShopKeep.UI.Item"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:ShopKeepDB.Models"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource BackgroundColor}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   Grid.Row="0"
+                   FontSize="32"
+                   FontWeight="Bold"
+                   Foreground="{ThemeResource HeadingColor}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom">Items</TextBlock>
+
+        <ListView Grid.Column="0"
+                  Grid.Row="1"
+                  Grid.RowSpan="5"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Name="ItemView"
+                  ItemsSource="{x:Bind AllItems}"
+                  Background="{ThemeResource InteractiveElementColor}"
+                  SelectionChanged="Selector_OnSelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Item">
+                    <TextBlock Text="{x:Bind Name}"
+                               FontSize="25"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <TextBox Grid.Column="2" 
+                 Grid.Row="1"
+                 Header="Item Name"
+                 Name="ItemName"
+                 FontSize="20"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Width="220"
+                 Height="80"/>
+            <controls:NumberBox Grid.Column="2" 
+                     Grid.Row="2"
+                     Header="Price Minimum: Gold"
+                     Name="PriceMinGold"
+                     FontSize="20"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Width="220"
+                     Height="80"/>
+            <controls:NumberBox Grid.Column="3" 
+                     Grid.Row="2"
+                     Header="Price Maximum: Gold"
+                     Name="PriceMaxGold"
+                     FontSize="20"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Width="220"
+                     Height="80"/>
+            <controls:NumberBox Grid.Column="2" 
+                                Grid.Row="3"
+                                Header="Price Minimum: Silver"
+                                Name="PriceMinSilver"
+                                FontSize="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Width="220"
+                                Height="80"/>
+            <controls:NumberBox Grid.Column="3" 
+                                Grid.Row="3"
+                                Header="Price Maximum: Silver"
+                                Name="PriceMaxSilver"
+                                FontSize="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Width="220"
+                                Height="80"/>
+            <controls:NumberBox Grid.Column="2" 
+                                Grid.Row="4"
+                                Header="Price Minimum: Copper"
+                                Name="PriceMinCopper"
+                                FontSize="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Width="220"
+                                Height="80"/>
+        <controls:NumberBox Grid.Column="3" 
+                                Grid.Row="4"
+                                Header="Price Maximum: Copper"
+                                Name="PriceMaxCopper"
+                                FontSize="20"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Width="220"
+                                Height="80"/>
+        <ComboBox Grid.Column="3"
+                      Grid.Row="1"
+                      Header="Item Type"
+                      Name="ItemType"
+                      FontSize="20"
+                      Width="220"
+                      Height="80"
+                      ItemsSource="{x:Bind Types}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <ComboBox Grid.Column="4"
+                      Grid.Row="1"
+                      Header="Item Rarity"
+                      Name="ItemRarity"
+                      FontSize="20"
+                      HorizontalAlignment="Left"
+                      Width="220"
+                      Height="80"
+                      ItemsSource="{x:Bind Rarities}"/>
+            <Button Grid.Column="2"
+                    Grid.Row="5"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Width="220"
+                    Height="50"
+                    FontSize="20"
+                    Name="FilterButton"
+                    Click="FilterItems">Filter Items</Button>
+            <Button Grid.Column="3"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="220"
+                    Height="50"
+                    FontSize="20"
+                    Name="ClearButton"
+                    Click="ClearFilter">Clear Filter</Button>
+            <Button Grid.Column="4"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="220"
+                    Height="50"
+                    FontSize="20"
+                    Name="DeleteFilter"
+                    Click="DeleteFiltered"
+                    Background="DarkRed"
+                    Foreground="White">Delete Filtered</Button>
+            <Button Grid.Column="4"
+                    Grid.Row="6"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                    Width="200"
+                    Height="50"
+                    FontSize="20"
+                    Click="BackToMenu">Back</Button>
+
+    </Grid>
+</Page>
