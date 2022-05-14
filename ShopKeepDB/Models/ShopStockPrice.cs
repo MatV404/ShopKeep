@@ -10,5 +10,14 @@ namespace ShopKeepDB.Models
         public int Gold { get; set; }
         public int Silver { get; set; }
         public int Copper { get; set; }
+
+        public ShopStockPrice(int gold, int silver, int copper)
+        {
+            Gold = gold;
+            Silver = silver;
+            Copper = copper;
+        }
+
+        public ShopStockPrice()  { }
     }
 }

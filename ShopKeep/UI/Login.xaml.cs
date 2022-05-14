@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using ShopKeep.UI.Admin;
-using ShopKeep.UI.Regular;
+using ShopKeep.UI.User;
 using ShopKeepDB.Misc;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -19,7 +19,7 @@ namespace ShopKeep.UI
     {
         public Login()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private async void LoginSubmit(object sender, RoutedEventArgs e)
@@ -38,10 +38,10 @@ namespace ShopKeep.UI
                     PopupMessage.Message("You have been banned. Please, contact an administrator.");
                     return;
                 case LoginResults.Admin:
-                    this.Frame.Navigate(typeof(AdminMenu), loginResult.Item2);
+                    Frame.Navigate(typeof(AdminMenu), loginResult.Item2);
                     return;
                 case LoginResults.User:
-                    this.Frame.Navigate(typeof(RegularMenu), loginResult.Item2);
+                    Frame.Navigate(typeof(RegularMenu), loginResult.Item2);
                     return;
                 case LoginResults.Invalid:
                     PopupMessage.Message("Invalid credentials entered.");
@@ -57,7 +57,7 @@ namespace ShopKeep.UI
 
         private void CreateAccount(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Register));
+            Frame.Navigate(typeof(Register));
         }
     }
 }

@@ -32,7 +32,7 @@ namespace ShopKeep.UI.Item
         public ObservableCollection<string> Rarities { get; set; } = new ObservableCollection<string>();
         public CreateItem()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             PopulateItemTypes();
             foreach (var rarity in Constants.Rarities)
             {
@@ -48,7 +48,7 @@ namespace ShopKeep.UI.Item
 
         private void BackToMenu(object sender, RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            Frame.GoBack();
         }
 
         private async void CreateClick(object sender, RoutedEventArgs e)
@@ -82,7 +82,7 @@ namespace ShopKeep.UI.Item
             }
 
             bool result = await ShopKeepDB.Operations.Create.ItemCreator.CreateItemAsync(itemName, itemRarity,
-                this.ItemDescriptionBox.Text, priceGold, priceSilver, priceCopper, types);
+                ItemDescriptionBox.Text, priceGold, priceSilver, priceCopper, types);
             if (!result)
             {
                 PopupMessage.Message("Item creation failed.", "Okay");

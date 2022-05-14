@@ -18,8 +18,8 @@ namespace ShopKeepDB.Models
 
         public ItemTypes(Type type, Item item)
         {
-            this.Type = type;
-            this.Item = item;
+            Type = type;
+            Item = item;
         }
     }
 }

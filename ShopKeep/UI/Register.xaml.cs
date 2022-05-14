@@ -15,12 +15,12 @@ namespace ShopKeep.UI
     {
         public Register()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Login));
+            Frame.Navigate(typeof(Login));
         }
 
         private async void RegistrationClick(object sender, RoutedEventArgs e)
@@ -43,7 +43,7 @@ namespace ShopKeep.UI
                                          "Okay");
                     return;
                 case RegistrationResults.RegistrationSuccess:
-                    this.Frame.Navigate(typeof(Login));
+                    Frame.Navigate(typeof(Login));
                     return;
                 case RegistrationResults.DbError:
                     PopupMessage.Message("A database error occurred. Please, contact the administrator.",

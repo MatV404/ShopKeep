@@ -10,7 +10,7 @@ namespace ShopKeepDB.Operations.Update
 {
     public static class UserItemUpdate
     {
-        public static async Task<bool> UpdateUserItem(UserItem item, int newAmount)
+        public static async Task<bool> ChangeUserItemAmountAsync(UserItem item, int newAmount)
         {
             try
             {
@@ -24,6 +24,13 @@ namespace ShopKeepDB.Operations.Update
             {
                 return false;
             }
+        }
+
+        public static async Task<bool> UserItemUpdateOrCreate(UserItem item)
+        {
+            //await using var database = new ShopKeepContext();
+            //database.UserItem.Addra
+            return true;
         }
     }
 }

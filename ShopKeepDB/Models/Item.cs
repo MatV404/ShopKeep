@@ -21,11 +21,11 @@ namespace ShopKeepDB.Models
 
         public Item(string name, string? description, string rarity, BaseItemPrice price)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Rarity = rarity;
-            this.BaseItemPrice = price;
-            this.BaseItemPriceId = price.Id;
+            Name = name;
+            Description = description;
+            Rarity = rarity;
+            BaseItemPrice = price;
+            BaseItemPriceId = price.Id;
         }
     }
 }

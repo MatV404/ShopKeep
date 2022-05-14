@@ -13,5 +13,22 @@ namespace ShopKeepDB.Models
         public int Amount { get; set; }
         public int ShopStockPriceId { get; set; }
         public ShopStockPrice ShopStockPrice { get; set; }
+
+        public ShopStock(int shopId, int itemId, int amount, int priceId)
+        {
+            ShopId = shopId;
+            ItemId = itemId;
+            ShopStockPriceId = priceId;
+            Amount = amount;
+        }
+
+        public ShopStock(int shopId, int itemId, int amount)
+        {
+            ShopId = shopId;
+            ItemId = itemId;
+            Amount = amount;
+        }
+
+        public ShopStock() { }
     }
 }

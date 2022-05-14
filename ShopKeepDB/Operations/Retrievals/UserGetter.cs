@@ -28,14 +28,13 @@ namespace ShopKeepDB.Operations.Retrievals
             }
         }
 
-        public static async Task<List<User>> FilterUsers(int userId, string userName)
+        public static async Task<List<User>> FilterUsers(string userName)
         {
             try
             {
                 await using var database = new ShopKeepContext();
                 return await database.User.Include(user => user.Coins)
-                                          .Where(user => user.Name.Contains(userName) 
-                                                         && user.Id == ((userId == -1) ? user.Id : userId))
+                                          .Where(user => user.Name.Contains(userName))
                                           .ToListAsync();
             }
             catch (DbException)

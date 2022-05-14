@@ -16,11 +16,19 @@ namespace ShopKeepDB.Operations.Credentials
         {
             try
             {
-                await using var database = new ShopKeepContext();
+                await using var database = new ShopKeepContext(); 
                 var query = await database.User.Include(user => user.Coins)
-                                                    .FirstOrDefaultAsync(user => user.Name == username && user.Password == password);
+                                                    .FirstOrDefaultAsync(user => user.Name == username);
 
                 if (query == null)
+                {
+                    return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
+                }
+
+                var salt = query.Salt;
+                var passHash = Hashing.CreateHash(password, Convert.FromBase64String(salt));
+
+                if (!query.Password.Equals(Convert.ToBase64String(passHash)))
                 {
                     return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
                 }

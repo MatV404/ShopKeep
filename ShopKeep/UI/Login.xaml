@@ -9,7 +9,6 @@
     Background="{ThemeResource BackgroundColor}">
 
     <Grid>
-
         <TextBlock FontSize="32" 
                    FontWeight="Bold"
                    Foreground="{ThemeResource HeadingColor}"

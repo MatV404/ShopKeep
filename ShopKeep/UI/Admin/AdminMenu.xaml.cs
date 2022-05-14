@@ -13,8 +13,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.UI.Item;
-using ShopKeep.UI.Regular;
 using ShopKeep.UI.Shop;
+using ShopKeep.UI.User;
+using ShopKeepDB.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,44 +26,58 @@ namespace ShopKeep.UI.Admin
     /// </summary>
     public sealed partial class AdminMenu : Page
     {
+        private ShopKeepDB.Models.User _currentUser;
+
         public AdminMenu()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs arguments)
+        {
+            base.OnNavigatedTo(arguments);
+            _currentUser = arguments.Parameter as ShopKeepDB.Models.User;
+        }
+
 
         private void ViewShopsClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Shops));
+            Frame.Navigate(typeof(Shops), _currentUser);
         }
 
         private void CreateShopClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(CreateShop));
+            Frame.Navigate(typeof(CreateShop));
         }
 
         private void DeleteShopsClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(DeleteShops));
+            Frame.Navigate(typeof(DeleteShops));
         }
 
         private void ManageItemsClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Items));
+            Frame.Navigate(typeof(Items));
         }
 
         private void CreateItemClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(CreateItem));
+            Frame.Navigate(typeof(CreateItem));
         }
 
         private void ManageUsers(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Regulars));
+            Frame.Navigate(typeof(Users));
         }
 
         private void LogOut(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Login));
+            Frame.Navigate(typeof(Login));
+        }
+
+        private void ChangePasswordClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ChangePassword), _currentUser);
         }
     }
 }

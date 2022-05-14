@@ -25,12 +25,12 @@ namespace ShopKeep.UI.Shop
     {
         public DeleteShops()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void BackToMenu(object sender, RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            Frame.GoBack();
         }
     }
 }

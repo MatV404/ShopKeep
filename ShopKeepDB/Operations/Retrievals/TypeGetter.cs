@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,15 @@ namespace ShopKeepDB.Operations.Retrievals
     {
         public static async Task<List<Type>> GetAllTypesAsync()
         {
-            await using var database = new ShopKeepContext();
-            return await database.Type.ToListAsync();
+            try
+            {
+                await using var database = new ShopKeepContext();
+                return await database.Type.ToListAsync();
+            }
+            catch (DbException)
+            {
+                return null;
+            }
         }
 
         public static async Task<List<Type>> GetAllTypesByIdAsync(List<int> typeIds)

@@ -17,13 +17,17 @@ namespace ShopKeepDB.Operations.Credentials
             try
             {
                 await using var database = new ShopKeepContext();
-                User newUser = new(username, password);
                 try
                 {
-                    if (await database.User.FirstOrDefaultAsync(user => user.Name == username) != null)
+                    if (await database.User.FindAsync(username) != null)
                     {
                         return RegistrationResults.RegistrationFailure;
                     }
+                    var salt = Hashing.GenerateSalt();
+                    var hashedPass = Hashing.CreateHash(password, salt);
+                    string convertedPass = Convert.ToBase64String(hashedPass);
+                    string convertedSalt = Convert.ToBase64String(salt);
+                    User newUser = new(username, convertedPass, convertedSalt);
                     var coinsQuery = await database.Coins.AddAsync(new Coins());
                     newUser.Coins = coinsQuery.Entity;
                     var userQuery = await database.User.AddAsync(newUser);

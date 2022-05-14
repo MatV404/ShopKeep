@@ -5,144 +5,569 @@
     xmlns:local="using:ShopKeep.UI.Shop"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:ShopKeepDB.Models"
+    xmlns:transactionMisc="using:ShopKeepDB.TransactionMisc"
     mc:Ignorable="d"
     Background="{ThemeResource BackgroundColor}">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="440" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="290" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="220" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.ColumnSpan="2"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+
+        <TextBlock 
+                   Grid.ColumnSpan="8"
+                   Grid.Row="0"
                    FontSize="32"
                    FontWeight="Bold"
                    Foreground="{ThemeResource HeadingColor}"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   Margin="0 20 0 0"
-                   >ShopName</TextBlock>
+                   VerticalAlignment="Bottom"
+                   Text="{x:Bind _currentShop.Name}" />
 
-        <TextBlock Grid.Column="0"
+        <TextBlock Grid.Column="1"
+                   Grid.Row="1"
                    FontSize="32"
                    FontWeight="Bold"
                    Foreground="{ThemeResource HeadingColor}"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   Margin="80 70 80 80">Shop Stock</TextBlock>
+                   VerticalAlignment="Top">Shop Stock</TextBlock>
 
-        <ListView Grid.Column="0"
+        <ListView Grid.Column="1"
+                  Grid.Row="1"
+                  Grid.RowSpan="4"
                   HorizontalAlignment="Stretch"
-                  VerticalAlignment="Center"
-                  Height="800"
-                  Margin="40 100 40 40"
-                  Background="{ThemeResource InteractiveElementColor}"/>
+                  VerticalAlignment="Bottom"
+                  Height="350"
+                  Name="ShopStock"
+                  ItemsSource="{x:Bind _currentShopStock}"
+                  Background="{ThemeResource InteractiveElementColor}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:ShopStock">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="2*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.55*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="0.7*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   FontSize="20"
+                                   Text="{x:Bind Amount}" />
+                        <TextBlock Grid.Column="2" 
+                                   FontSize="20"
+                                   Text="{x:Bind Item.Name}"/>
+                        <TextBlock Grid.Column="3"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Text="{x:Bind ShopStockPrice.Gold}"/>
+                        <TextBlock Grid.Column="4"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">G</TextBlock>
+                        <TextBlock Grid.Column="5"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Text="{x:Bind ShopStockPrice.Silver}" />
+                        <TextBlock Grid.Column="6"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">S</TextBlock>
+                        <TextBlock Grid.Column="7"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind ShopStockPrice.Copper}" />
+                        <TextBlock Grid.Column="8"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">C</TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-            <TextBlock Grid.Column="0" 
-                       Grid.Row="1"
-                       FontSize="20"
-                       HorizontalAlignment="Left"
-                       Margin="0 0 0 0"
-                       VerticalAlignment="Top">Shop Type:</TextBlock>
-            <TextBlock Grid.Column="0" 
-                       Grid.Row="1"
-                       FontSize="20"
-                       HorizontalAlignment="Left"
-                       Margin="0 40 0 0"
-                       VerticalAlignment="Top">Shop Locale:</TextBlock>
-            <TextBlock Grid.Column="0" 
-                       Grid.Row="1"
-                       FontSize="20"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Margin="0 0 0 50">Shop Owner:</TextBlock>
+        <TextBlock Grid.Column="3" 
+                   Grid.Row="1"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top">Shop Type:</TextBlock>
+        <TextBlock Grid.Column="4"
+                   Grid.Row="1"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Text="{x:Bind _currentShop.Type.Name}"/>
+        <TextBlock Grid.Column="3" 
+                   Grid.Row="1"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center">Shop Locale:</TextBlock>
+        <TextBlock Grid.Column="4"
+                   Grid.Row="1"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Text="{x:Bind _currentShop.Locale}" />
+        <TextBlock Grid.Column="3" 
+                   Grid.Row="1"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom">Shop Owner:</TextBlock>
+        <TextBlock Grid.Row="1"
+                   Grid.Column="4"
+                   FontSize="25"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Text="{x:Bind _currentShop.Owner}" />
+        <TextBlock Grid.Row="2"
+                   Grid.Column="3"
+                   Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   FontSize="25">Shop Description:</TextBlock>
 
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       VerticalAlignment="Top"
-                       HorizontalAlignment="Left"
-                       FontSize="20"
-                       Margin="299,0,0,0" Grid.ColumnSpan="2">Shop Description</TextBlock>
+        <TextBlock Grid.Row="2"
+                   Grid.RowSpan="2"
+                   Grid.Column="3"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Stretch"
+                   Grid.ColumnSpan="2"
+                   Height="160"
+                   FontSize="25"
+                   TextWrapping="Wrap"
+                   Text="{x:Bind _currentShop.Description}"/>
 
-            <RichTextBlock Grid.Row="1"
-                           Grid.RowSpan="2"
-                           Grid.Column="0"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Center"
-                           Height="200" 
-                           Width="400"
-                           Grid.ColumnSpan="2"
-                           Margin="280 0 20 170"/>
+        <controls:NumberBox Grid.Row="9"
+                 Grid.Column="1"
+                 HorizontalAlignment="Left"
+                 Header="Stock Amount"
+                 Name="BuyAmount"
+                 FontSize="25"
+                 Width="200"/>
 
-            <TextBox Grid.Column="0"
-                     Grid.Row="3"
-                     HorizontalAlignment="Left"
-                     VerticalAlignment="Top"
-                     Header="Item Id"
-                     FontSize="20"
-                     Name="AddItemIdBox"
-                     Height="80"
-                     Width="200" />
-            <TextBox Grid.Column="0"
-                     Grid.Row="3"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Top"
-                     Header="Amount"
-                     FontSize="20"
-                     Name="AmountItemBox"
-                     Height="80"
-                     Width="200"></TextBox>
-            <TextBox Grid.Column="0"
-                     Grid.Row="3"
-                     HorizontalAlignment="Left"
-                     VerticalAlignment="Center"
-                     Header="Price"
-                     FontSize="20"
-                     Name="PriceItemBox"
-                     Height="80"
-                     Width="200" />
-            <Button Grid.Column="0"
-                    Grid.Row="3"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Width="200"
-                    Height="50"
-                    FontSize="20"
-                    Margin="0 50  250 0"
-                    Name="AddItemButton">Add Item to Shop</Button>
+        <controls:NumberBox Grid.Row="9"
+                            Grid.Column="6"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Width="200"
+                            FontSize="25"
+                            Header="Item Amount"
+                            Name="SellAmount"/>
 
-            <Button Grid.Column="0"
-                    Grid.Row="4"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Width="200"
-                    Height="50"
-                    Name="StockGeneration"
-                    FontSize="20"
-                    Margin="0 30 0 0">Generate New Stock</Button>
+        <Button Grid.Column="1"
+                Grid.Row="9"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Height="80"
+                Width="200"
+                FontSize="25"
+                Name="AddToBuyButton"
+                Click="AddToBuyList"
+                Content="Add to Buy"/>
 
-            <Button Grid.Column="1"
-                    Grid.Row="4"
+        <Button Grid.Column="3"
+                Grid.Row="9"
+                Grid.ColumnSpan="2"
+                Width="200"
+                Height="80"
+                HorizontalAlignment="Left"
+                FontSize="25"
+                Name="BuyItemsButton"
+                Click="BuyItemsAsync"
+                VerticalAlignment="Bottom">Buy Items</Button>
+
+        <Button Grid.Column="4"
+                Grid.Row="9"
+                Width="200"
+                Height="80"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                FontSize="25"
+                Name="SellItemsButton"
+                Click="SellItemsAsync">Sell Items</Button>
+
+        <Button Grid.Column="7"
+                Grid.Row="9"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Height="80"
+                Width="200"
+                Name="AddToSaleButton"
+                Click="AddToSaleItems"
+                FontSize="25">Add to Sale</Button>
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Name="GoldBalanceLabel"
+                   FontSize="25">Gold Balance:</TextBlock>
+        <TextBlock Grid.Column="7"
+                   Grid.Row="1"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Name="GoldBalance"
+                   FontSize="25"
+                   Text="{x:Bind _currentUser.Coins.Gold}"/>
+        <TextBlock Grid.Column="6"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Name="SilverBalanceLabel"
+                   FontSize="25">Silver Balance:</TextBlock>
+        <TextBlock Grid.Column="7"
+                   Grid.Row="1"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Name="SilverBalance"
+                   FontSize="25"
+                   Text="{x:Bind _currentUser.Coins.Silver}"/>
+        <TextBlock Grid.Column="6"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Name="CopperBalanceLabel"
+                   FontSize="25">Copper Balance:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="1"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Name="CopperBalance"
+                   FontSize="25"
+                   Text="{x:Bind _currentUser.Coins.Copper}" />
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Name="GoldLossLabel"
+                   FontSize="25">Gold Loss:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="2"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Name="GoldLoss"
+                   FontSize="25"
+                   Text="{x:Bind _coinLossTracker.Gold}"
+                   Foreground="DarkRed"/>
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Name="SilverLossLabel"
+                   FontSize="25">Silver Loss:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Name="SilverLoss"
+                   FontSize="25"
+                   Text="{x:Bind _coinLossTracker.Silver}"
+                   Foreground="DarkRed"/>
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Name="CopperLossLabel"
+                   FontSize="25">Copper Loss:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   FontSize="25"
+                   Name="CopperLoss"
+                   Text="{x:Bind _coinLossTracker.Copper}"
+                   Foreground="DarkRed" />
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="4"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   FontSize="25"
+                   Name="GoldGainLabel">Gold Gain:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="4"
+                   FontSize="25"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   Name="GoldGain"
+                   Text="{x:Bind _coinGainTracker.Gold}"
+                   Foreground="DarkGreen" />
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="4"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="25"
+                   Name="SilverGainLabel">Silver Gain:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="4"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Text="{x:Bind _coinGainTracker.Silver}"
+                   Name="SilverGain"
+                   FontSize="25"
+                   Foreground="DarkGreen" />
+
+        <TextBlock Grid.Column="6"
+                   Grid.Row="4"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   FontSize="25"
+                   Name="CopperGainLabel">Copper Gain:</TextBlock>
+
+        <TextBlock Grid.Column="7"
+                   Grid.Row="4"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   FontSize="25"
+                   Name="CopperGain"
+                   Text="{x:Bind _coinGainTracker.Copper}"
+                   Foreground="DarkGreen" />
+
+        <Button Grid.Column="7"
+                    Grid.Row="10"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
                     Width="200"
-                    Height="50"
-                    FontSize="20"
-                    Click="BackToShops"
-                    Margin="0 0 20 20">Back</Button>
-        </Grid>
+                    Height="80"
+                    FontSize="25"
+                    Click="BackToShops">Back</Button>
+        <TextBlock Grid.Row="6"
+                   Grid.Column="1"
+                   FontSize="25"
+                   FontWeight="Bold"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Name="PurchaseTitle"
+                   Foreground="{StaticResource HeadingColor}">Item Purchase</TextBlock>
+        <ListView Grid.Row="6"
+                  Grid.RowSpan="3"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Bottom"
+                  FontSize="25"
+                  Height="270"
+                  Name="PurchaseView"
+                  ItemsSource="{x:Bind _buyStock}"
+                  Background="{StaticResource InteractiveElementColor}"
+                  Grid.Column="1"
+                  SelectionChanged="RemoveFromPurchase">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="transactionMisc:BuyStock">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   FontSize="20"
+                                   HorizontalAlignment="Left"
+                                   Text="{x:Bind Amount}" />
+                        <TextBlock Grid.Column="2"
+                                   FontSize="20"
+                                   HorizontalAlignment="Left"
+                                   Text="{x:Bind OriginalShopStock.Item.Name}" />
+                        <TextBlock Grid.Column="3"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind TotalPriceGold}" />
+                        <TextBlock Grid.Column="4"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">G</TextBlock>
+                        <TextBlock Grid.Column="5"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind TotalPriceSilver}" />
+                        <TextBlock Grid.Column="6"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">S</TextBlock>
+                        <TextBlock Grid.Column="7"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind TotalPriceCopper}" />
+                        <TextBlock Grid.Column="8"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">C</TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBlock Grid.Row="6"
+                   Grid.Column="3"
+                   Grid.ColumnSpan="2"
+                   FontSize="25"
+                   FontWeight="Bold"
+                   Name="SaleTitle"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Foreground="{StaticResource HeadingColor}">Item Sale</TextBlock>
+        <ListView Grid.Column="3"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="6"
+                  Grid.RowSpan="3"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Bottom"
+                  FontSize="25"
+                  Height="270"
+                  Name="SaleView"
+                  SelectionChanged="RemoveFromSale"
+                  ItemsSource="{x:Bind _saleItems}"
+                  Background="{StaticResource InteractiveElementColor}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="transactionMisc:SaleItem">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind Amount}" />
+                        <TextBlock Grid.Column="2"
+                                   FontSize="20"
+                                   HorizontalAlignment="Left"
+                                   Text="{x:Bind OriginalUserItemName}" />
+                        <TextBlock Grid.Column="3"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind TotalPriceGold}"/>
+                        <TextBlock Grid.Column="4"
+                                   HorizontalAlignment="Center"
+                                   FontSize="20">G</TextBlock>
+                        <TextBlock Grid.Column="5"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Text="{x:Bind TotalPriceSilver}" />
+                        <TextBlock Grid.Column="6"
+                                   HorizontalAlignment="Center"
+                                   FontSize="20">S</TextBlock>
+                        <TextBlock Grid.Column="7"
+                                   HorizontalAlignment="Right"
+                                   FontSize="20"
+                                   Text="{x:Bind TotalPriceCopper}" />
+                        <TextBlock Grid.Column="8"
+                                   HorizontalAlignment="Center"
+                                   FontSize="20">C</TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBlock Grid.Row="6"
+                   Grid.Column="6"
+                   Grid.ColumnSpan="2"
+                   FontSize="25"
+                   Foreground="{StaticResource HeadingColor}"
+                   FontWeight="Bold"
+                   Name="InventoryTitle"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top">Your inventory</TextBlock>
+        <ListView Grid.Column="6"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="6"
+                  Grid.RowSpan="3"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Bottom"
+                  FontSize="25"
+                  Height="270"
+                  Name="InventoryView"
+                  ItemsSource="{x:Bind _userItems}"
+                  Background="{StaticResource InteractiveElementColor}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:UserItem">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   FontSize="20"
+                                   HorizontalAlignment="Left"
+                                   Text="{x:Bind Amount}" />
+                        <TextBlock Grid.Column="2"
+                                   FontSize="20"
+                                   HorizontalAlignment="Left"
+                                   Text="{x:Bind Item.Name}" />
+                        <TextBlock Grid.Column="3"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind Item.BaseItemPrice.Gold}" />
+                        <TextBlock Grid.Column="4"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">G</TextBlock>
+                        <TextBlock Grid.Column="5"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind Item.BaseItemPrice.Silver}" />
+                        <TextBlock Grid.Column="6"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">S</TextBlock>
+                        <TextBlock Grid.Column="7"
+                                   FontSize="20"
+                                   HorizontalAlignment="Right"
+                                   Text="{x:Bind Item.BaseItemPrice.Copper}" />
+                        <TextBlock Grid.Column="8"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">C</TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

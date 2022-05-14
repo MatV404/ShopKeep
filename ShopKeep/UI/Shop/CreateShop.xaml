@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ShopKeep.UI.Shop"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:ShopKeepDB.Models"
     mc:Ignorable="d"
     Background="{ThemeResource BackgroundColor}">
 
@@ -48,7 +48,7 @@
                  Grid.Column="2"
                  FontSize="25"
                  Name="ShopOwnerBox"
-                 Header="Shop Name"
+                 Header="Shop Owner"
                  Width="200"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Stretch"></TextBox>
@@ -59,7 +59,14 @@
                   Header="Shop Type"
                   Width="200"
                   HorizontalAlignment="Left"
-                  VerticalAlignment="Stretch"></ComboBox>
+                  VerticalAlignment="Stretch"
+                  ItemsSource="{x:Bind Types}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="models:Type">
+                    <TextBlock Text="{x:Bind Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         <ComboBox Grid.Row="1"
                   Grid.Column="4"
                   FontSize="25"
@@ -67,17 +74,19 @@
                   Header="Shop Locale"
                   Width="200"
                   HorizontalAlignment="Left"
-                  VerticalAlignment="Stretch"></ComboBox>
+                  VerticalAlignment="Stretch"
+                  ItemsSource="{x:Bind Locales}">
+        </ComboBox>
 
         <TextBox Grid.Row="2"
                  Grid.Column="1"
                  Grid.ColumnSpan="4"
                  Name="ShopDescriptionBox"
                  Header="Shop Description"
-                 PlaceholderText="Shop Description"
-                 FontSize="20"
+                 FontSize="25"
                  HorizontalAlignment="Stretch"
-                 VerticalAlignment="Stretch">
+                 VerticalAlignment="Stretch"
+                 TextWrapping="Wrap">
         </TextBox>
         
         <Button Grid.Row="1"
@@ -86,7 +95,8 @@
                 HorizontalAlignment="Left"
                 Width="200"
                 Height="80"
-                FontSize="25">Create Shop</Button>
+                FontSize="25"
+                Click="CreateShopClickAsync">Create Shop</Button>
 
         <CheckBox Grid.Row="3"
                   Grid.Column="1"

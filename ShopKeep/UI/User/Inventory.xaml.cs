@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeepDB.Models;
 using Type = ShopKeepDB.Models.Type;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace ShopKeep.UI.Regular
+namespace ShopKeep.UI.User
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -26,13 +17,13 @@ namespace ShopKeep.UI.Regular
     public sealed partial class Inventory : Page
     {
 
-        private User CurrentUser;
+        private ShopKeepDB.Models.User CurrentUser;
         private ObservableCollection<UserItem> InventoryItems = new ObservableCollection<UserItem>();
         private ObservableCollection<string> Rarities = new ObservableCollection<string>();
         private ObservableCollection<Type> Types = new ObservableCollection<Type>();
         public Inventory()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             foreach (var rarity in ShopKeepDB.Misc.Constants.Rarities)
             {
                 Rarities.Add(rarity);
@@ -43,7 +34,7 @@ namespace ShopKeep.UI.Regular
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            Tuple<User, bool> args = (Tuple<User, bool>) arguments.Parameter;
+            Tuple<ShopKeepDB.Models.User, bool> args = (Tuple<ShopKeepDB.Models.User, bool>) arguments.Parameter;
             CurrentUser = args.Item1;
             PopulateItemsAsync();
             if (!args.Item2)
@@ -61,7 +52,7 @@ namespace ShopKeep.UI.Regular
 
         private async void PopulateItemsAsync()
         {
-            var items = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(CurrentUser.Id);
+            var items = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(CurrentUser.Name);
             foreach (var item in items)
             {
                 InventoryItems.Add(item);
@@ -79,7 +70,7 @@ namespace ShopKeep.UI.Regular
 
         private void BackToMenu(object sender, RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            Frame.GoBack();
         }
 
         private async void BanUser(object sender, RoutedEventArgs e)
@@ -96,7 +87,7 @@ namespace ShopKeep.UI.Regular
                 : ItemRarityBox.SelectionBoxItem.ToString();
             int? itemTypeId = ((Type) ItemTypeBox.SelectionBoxItem)?.Id;
             var results =
-                await ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(CurrentUser.Id, itemName,
+                await ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(CurrentUser.Name, itemName,
                     itemRarity, itemTypeId);
             if (results == null)
             {
@@ -153,7 +144,7 @@ namespace ShopKeep.UI.Regular
             {
                 foreach (UserItem item in toUpdate)
                 {
-                    if (!await ShopKeepDB.Operations.Update.UserItemUpdate.UpdateUserItem(item,
+                    if (!await ShopKeepDB.Operations.Update.UserItemUpdate.ChangeUserItemAmountAsync(item,
                             item.Amount - itemAmount))
                     {
                         updateResult = false;

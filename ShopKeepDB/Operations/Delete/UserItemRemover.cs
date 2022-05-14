@@ -24,5 +24,20 @@ namespace ShopKeepDB.Operations.Delete
                 return false;
             }
         }
+
+        public static async Task<bool> DeleteUserItemAsync(UserItem item)
+        {
+            try
+            {
+                await using var database = new ShopKeepContext();
+                database.Remove(item);
+                await database.SaveChangesAsync();
+                return true;
+            }
+            catch (DbException)
+            {
+                return false;
+            }
+        }
     }
 }

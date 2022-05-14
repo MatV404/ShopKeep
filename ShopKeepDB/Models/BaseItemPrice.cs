@@ -20,9 +20,9 @@ namespace ShopKeepDB.Models
 
         public BaseItemPrice(int gold, int silver, int copper)
         {
-            this.Gold = gold;
-            this.Silver = silver;
-            this.Copper = copper;
+            Gold = gold;
+            Silver = silver;
+            Copper = copper;
         }
     }
 }

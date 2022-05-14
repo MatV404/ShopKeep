@@ -5,103 +5,124 @@
     xmlns:local="using:ShopKeep.UI.Shop"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:ShopKeepDB.Models"
     mc:Ignorable="d"
     Background="{ThemeResource BackgroundColor}">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="220"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0"
+        <TextBlock Grid.Column="1"
+                   Grid.Row="0"
                    FontSize="32"
                    FontWeight="Bold"
                    Foreground="{ThemeResource HeadingColor}"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   Margin="80 70 80 80">Shops</TextBlock>
+                   VerticalAlignment="Bottom">Shops</TextBlock>
 
-        <ListView Grid.Column="0"
+        <ListView Grid.Column="1"
+                  Grid.Row="1"
+                  Grid.RowSpan="6"
                   HorizontalAlignment="Stretch"
-                  VerticalAlignment="Center"
-                  Height="800"
-                  Margin="40 100 40 40"
-                  Background="{ThemeResource InteractiveElementColor}"/>
-
-        <Grid Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5*" />
-                <ColumnDefinition Width="2*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="129*" />
-                <RowDefinition Height="205*" />
-                <RowDefinition Height="195*" />
-                <RowDefinition Height="235*" />
-                <RowDefinition Height="236*" />
-            </Grid.RowDefinitions>
-            <TextBox Grid.Column="0" 
-                     Grid.Row="1"
-                     Header="Shop Name"
-                     Name="ShopName"
-                     FontSize="20"
-                     HorizontalAlignment="Left"
-                     VerticalAlignment="Top"
-                     Width="200"
-                     Height="80"/>
-            <TextBox Grid.Column="0" 
+                  VerticalAlignment="Stretch"
+                  SelectionChanged="OnShopSelection"
+                  Name="ShopsView"
+                  ItemsSource="{x:Bind ShopCollection}"
+                  Background="{ThemeResource InteractiveElementColor}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Shop">
+                    <TextBlock Text="{x:Bind Name}" 
+                               FontSize="25"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBox Grid.Column="3" 
+                 Grid.Row="1"
+                 Header="Shop Name"
+                 Name="ShopName"
+                 FontSize="25"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Stretch"
+                 Width="200"/>
+            <TextBox Grid.Column="4" 
                      Grid.Row="1"
                      Header="Shop Owner"
                      Name="OwnerName"
-                     FontSize="20"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Top"
-                     Width="200"
-                     Height="80"/>
-            <ComboBox Grid.Column="0"
-                      Grid.Row="1"
+                     FontSize="25"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Stretch"
+                     Width="200"/>
+            <ComboBox Grid.Column="3"
+                      Grid.Row="2"
                       Header="Shop Type"
                       Name="ShopType"
-                      FontSize="20"
-                      Margin="0,102,0,0"
+                      FontSize="25"
                       Width="200"
-                      Height="80" />
-            <ComboBox Grid.Column="0"
-                      Grid.Row="1"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Stretch"
+                      ItemsSource="{x:Bind Types}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:Type">
+                        <TextBlock Text="{x:Bind Name}" 
+                                   FontSize="25"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox Grid.Column="4"
+                      Grid.Row="2"
                       Header="Shop Locale"
                       Name="ShopLocale"
-                      FontSize="20"
-                      HorizontalAlignment="Right"
-                      Margin="0,102,0,0"
-                      Width="200"
-                      Height="80" />
-            <Button Grid.Column="0"
-                    Grid.Row="2"
-                    VerticalAlignment="Top"
-                    Width="200"
-                    Height="50"
-                    FontSize="20"
-                    Name="FilterButton">Filter Shops</Button>
-            <Button Grid.Column="0"
-                    Grid.Row="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Width="200"
-                    Height="50"
-                    FontSize="20"
-                    Name="ClearButton">Clear Filter</Button>
-
-            <Button Grid.Column="1"
-                    Grid.Row="4"
+                      FontSize="25"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Stretch"
+                      Width="200" 
+                      ItemsSource="{x:Bind Locales}"/>
+            <Button Grid.Column="3"
+                    Grid.Row="3"
                     VerticalAlignment="Bottom"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     Width="200"
-                    Height="50"
-                    FontSize="20"
-                    Click="BackToMenu"
-                    Margin="0 0 20 20">Back</Button>
-        </Grid>
+                    Height="80"
+                    FontSize="25"
+                    Name="FilterButton"
+                    Click="FilterShopsAsync">Filter Shops</Button>
+            <Button Grid.Column="4"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Width="200"
+                    Height="80"
+                    FontSize="25"
+                    Name="ClearButton"
+                    Click="ClearFilters">Clear Filter</Button>
 
+            <Button Grid.Column="4"
+                    Grid.Row="7"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Width="200"
+                    Height="80"
+                    FontSize="25"
+                    Click="BackToMenu">Back</Button>
     </Grid>
 </Page>

@@ -28,12 +28,12 @@ namespace ShopKeepDB.Context
         public DbSet<UserItem> UserItem { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-            optionsBuilder.UseNpgsql(""); //ConfigurationManager.ConnectionStrings[0].ConnectionString);
+            optionsBuilder.UseNpgsql(Misc.ConnectionStrings.GetConnectionString("ShopKeep"));
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(user => user.Id);
+            modelBuilder.Entity<User>().HasKey(user => user.Name);
             modelBuilder.Entity<User>().HasMany(user => user.Items);
 
             modelBuilder.Entity<Coins>().HasKey(coins => coins.Id);
@@ -54,10 +54,11 @@ namespace ShopKeepDB.Context
             modelBuilder.Entity<Shop>().HasKey(shop => shop.Id);
             
             modelBuilder.Entity<ShopStock>().HasKey(stock => new {stock.ShopId, stock.ItemId});
-            
+            modelBuilder.Entity<ShopStock>().HasOne(stock => stock.ShopStockPrice);
+
             modelBuilder.Entity<ShopStockPrice>().HasKey(stockPrice => stockPrice.Id);
             
-            modelBuilder.Entity<UserItem>().HasKey(userItem => new {userItem.ItemId, userItem.UserId});
+            modelBuilder.Entity<UserItem>().HasKey(userItem => new {userItem.ItemId, userItem.UserName});
         }
     }
 

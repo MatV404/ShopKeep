@@ -33,7 +33,7 @@ namespace ShopKeep.UI.Item
         public ObservableCollection<string> Rarities { get; private set; } = new ObservableCollection<string>();
         public ItemManagement()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             foreach (var rarity in Constants.Rarities)
             {
                 Rarities.Add(rarity);
@@ -42,7 +42,7 @@ namespace ShopKeep.UI.Item
 
         private async void PopulateExaminedTypes()
         {
-            this.ExaminedTypes =
+            ExaminedTypes =
                 await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesByIdAsync(
                     ExaminedItem.ItemTypes.Select(itemType => itemType.TypeId).ToList());
         }
@@ -50,31 +50,31 @@ namespace ShopKeep.UI.Item
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            this.ExaminedItem = arguments.Parameter as ShopKeepDB.Models.Item;
+            ExaminedItem = arguments.Parameter as ShopKeepDB.Models.Item;
             PopulateExaminedTypes();
         }
 
         private void Back(object sender, RoutedEventArgs e)
         {
-            this.Frame.GoBack();
+            Frame.GoBack();
         }
 
         //ToDo: Figure out how to refresh the textbox stuff.
         private async void EditItemAsync(object sender, RoutedEventArgs e)
         {
-            string itemName = String.IsNullOrWhiteSpace(this.ItemName.Text) ? ExaminedItem.Name : this.ItemName.Text;
+            string itemName = String.IsNullOrWhiteSpace(ItemName.Text) ? ExaminedItem.Name : ItemName.Text;
             string itemRarity = ItemRarity.SelectionBoxItem == null
                 ? ExaminedItem.Rarity
                 : ItemRarity.SelectionBoxItem.ToString();
-            string itemDescription = String.IsNullOrWhiteSpace(this.ItemDescription.Text) ? ExaminedItem.Description : this.ItemDescription.Text;
-            int goldPrice = this.GoldPrice.Value >= 0 
-                ? (int) this.GoldPrice.Value 
+            string itemDescription = String.IsNullOrWhiteSpace(ItemDescription.Text) ? ExaminedItem.Description : ItemDescription.Text;
+            int goldPrice = GoldPrice.Value >= 0 
+                ? (int) GoldPrice.Value 
                 : ExaminedItem.BaseItemPrice.Gold;
-            int silverPrice = this.SilverPrice.Value >= 0
-                ? (int) this.SilverPrice.Value
+            int silverPrice = SilverPrice.Value >= 0
+                ? (int) SilverPrice.Value
                 : ExaminedItem.BaseItemPrice.Silver;
-            int copperPrice = this.CopperPrice.Value >= 0
-                ? (int) this.CopperPrice.Value
+            int copperPrice = CopperPrice.Value >= 0
+                ? (int) CopperPrice.Value
                 : ExaminedItem.BaseItemPrice.Copper;
             var item = await ShopKeepDB.Operations.Update.ItemUpdate.UpdateItemAsync(ExaminedItem, itemName, itemRarity, 
                                                                           itemDescription, goldPrice, silverPrice, copperPrice);

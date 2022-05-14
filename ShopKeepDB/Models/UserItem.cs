@@ -12,9 +12,18 @@ namespace ShopKeepDB.Models
         public int ItemId { get; set; }
         public Item Item { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public string UserName { get; set; }
         public User User { get; set; }
         [Required]
         public int Amount { get; set; }
+
+        public UserItem(int itemId, string userName, int amount)
+        {
+            ItemId = itemId;
+            UserName = userName;
+            Amount = amount;
+        }
+
+        public UserItem() {}
     }
 }

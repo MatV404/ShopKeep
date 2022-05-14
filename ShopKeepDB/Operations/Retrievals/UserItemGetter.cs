@@ -13,29 +13,33 @@ namespace ShopKeepDB.Operations.Retrievals
 {
     public static class UserItemGetter
     {
-        public static async Task<List<UserItem>> GetUserItems(int userId)
+        public static async Task<List<UserItem>> GetUserItems(string userName)
         {
             await using var database = new ShopKeepContext();
             return await database.UserItem.Include(item => item.Item)
-                                          .Where(item => item.UserId == userId)
+                                          .ThenInclude(item => item.BaseItemPrice)
+                                          .Where(item => item.UserName == userName)
                                           .ToListAsync();
         }
 
-        public static async Task<List<UserItem>> FilterUserItems(int userId, string itemName,
+        public static async Task<List<UserItem>> FilterUserItems(string userName, string itemName,
                                                                  string itemRarity, int? itemTypeId)
         {
             try
             {
                 await using var database = new ShopKeepContext();
                 var items = database.UserItem.Include(item => item.Item)
+                    .ThenInclude(item => item.BaseItemPrice)
                     .Where(item =>
-                        item.UserId == userId 
+                        item.UserName == userName 
                         && item.Item.Name.Contains(itemName) 
                         && item.Item.Rarity == (itemRarity ?? item.Item.Rarity));
                 if (itemTypeId != null)
                 {
                     var itemsByType = database.ItemTypes.Where(itemType => itemType.TypeId == itemTypeId).Select(itemType => itemType.ItemId);
-                    items = items.Include(item => item.Item).Where(item => itemsByType.Contains(item.ItemId));
+                    items = items.Include(item => item.Item)
+                                 .ThenInclude(item => item.BaseItemPrice)
+                                 .Where(item => itemsByType.Contains(item.ItemId));
                 }
                 return await items.ToListAsync();
             }

@@ -119,8 +119,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Misc\StockWriter.cs" />
     <Compile Include="UI\Admin\AdminMenu.xaml.cs">
       <DependentUpon>AdminMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Item\CreateItem.xaml.cs">
       <DependentUpon>CreateItem.xaml</DependentUpon>
@@ -139,14 +143,14 @@
     <Compile Include="UI\Register.xaml.cs">
       <DependentUpon>Register.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Regular\Inventory.xaml.cs">
+    <Compile Include="UI\User\Inventory.xaml.cs">
       <DependentUpon>Inventory.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Regular\RegularMenu.xaml.cs">
-      <DependentUpon>RegularMenu.xaml</DependentUpon>
+    <Compile Include="UI\User\UserMenu.xaml.cs">
+      <DependentUpon>UserMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Regular\Regulars.xaml.cs">
-      <DependentUpon>Regulars.xaml</DependentUpon>
+    <Compile Include="UI\User\Users.xaml.cs">
+      <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Shop\CreateShop.xaml.cs">
       <DependentUpon>CreateShop.xaml</DependentUpon>
@@ -156,6 +160,9 @@
     </Compile>
     <Compile Include="UI\Shop\Shop.xaml.cs">
       <DependentUpon>Shop.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shop\ShopAdmin.xaml.cs">
+      <DependentUpon>ShopAdmin.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Shop\Shops.xaml.cs">
       <DependentUpon>Shops.xaml</DependentUpon>
@@ -189,6 +196,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\ChangePassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Item\CreateItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -209,15 +220,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Regular\Inventory.xaml">
+    <Page Include="UI\User\Inventory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Regular\RegularMenu.xaml">
+    <Page Include="UI\User\UserMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Regular\Regulars.xaml">
+    <Page Include="UI\User\Users.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -233,6 +244,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Shop\ShopAdmin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Shop\Shops.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -240,15 +255,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.12</Version>
+      <Version>6.2.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.7.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Misc\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ShopKeepDB\ShopKeepDB.csproj">
       <Project>{896e192d-a429-4904-9b72-50a28fcc750e}</Project>
