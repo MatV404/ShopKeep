@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.UI.Item;
 using ShopKeep.UI.Shop;
-using ShopKeep.UI.User;
+using ShopKeep.UI.UserUI;
 using ShopKeepDB.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238

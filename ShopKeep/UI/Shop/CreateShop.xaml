@@ -60,7 +60,7 @@
                   Width="200"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
-                  ItemsSource="{x:Bind Types}">
+                  ItemsSource="{x:Bind _types}">
             <ComboBox.ItemTemplate>
                 <DataTemplate x:DataType="models:Type">
                     <TextBlock Text="{x:Bind Name}" />
@@ -75,7 +75,7 @@
                   Width="200"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
-                  ItemsSource="{x:Bind Locales}">
+                  ItemsSource="{x:Bind _locales}">
         </ComboBox>
 
         <TextBox Grid.Row="2"

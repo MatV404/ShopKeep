@@ -9,10 +9,11 @@ namespace ShopKeepDB.Models
     {
         [ForeignKey("Type")]
         public int TypeId { get; set; }
-        public Type Type { get; set; }
+        public Type Type { get; set; } = null!;
+
         [ForeignKey("Item")]
         public int ItemId { get; set; }
-        public Item Item { get; set; }
+        public Item Item { get; set; } = null!;
 
         public ItemTypes(){}
 

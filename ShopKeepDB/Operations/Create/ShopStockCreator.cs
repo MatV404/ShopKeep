@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
@@ -11,6 +9,16 @@ namespace ShopKeepDB.Operations.Create
 {
     public static class ShopStockCreator
     {
+        /// <summary>
+        /// Creates a ShopStock entry (and the corresponding ShopStockPrice entry) in the database ShopStock table.
+        /// </summary>
+        /// <param name="shopId">The shop Id of the shop that this stock belongs to.</param>
+        /// <param name="itemId">The item Id of the item that this stock represents.</param>
+        /// <param name="stockAmount">The amount of this stock in the given shop.</param>
+        /// <param name="goldPrice">The price of the stock in gold</param>
+        /// <param name="silverPrice">The price of the stock in silver</param>
+        /// <param name="copperPrice">The price of the stock in copper</param>
+        /// <returns>The created ShopStock object on success or null on failure.</returns>
         public static async Task<ShopStock> CreateShopStock(int shopId, int itemId, int stockAmount, int goldPrice,
             int silverPrice, int copperPrice)
         {
@@ -28,12 +36,18 @@ namespace ShopKeepDB.Operations.Create
                 shopStock.ShopStockPrice = price;
                 return shopStock;
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
             {
                 return null;
             }
         }
 
+        /// <summary>
+        /// Creates or updates the given ShopStock entries (and their corresponding ShopStockPrice objects) based on UserItem objects and a shop Id.
+        /// </summary>
+        /// <param name="itemList">A list of UserItems</param>
+        /// <param name="shopId">The id of the given shop.</param>
+        /// <returns>True if the operation succeeded, false on failure.</returns>
         public static async Task<bool> CreateOrUpdateShopStock(List<UserItem> itemList, int shopId)
         {
             try
@@ -62,18 +76,23 @@ namespace ShopKeepDB.Operations.Create
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
             {
                 return false;
             }
         }
 
+        /// <summary>
+        /// Creates ShopStock entries (and their corresponding ShopStockPrice objects) in the database from a list of ShopStock objects.
+        /// </summary>
+        /// <param name="stock">A list of ShopStock objects.</param>
+        /// <returns></returns>
         public static async Task<bool> CreateShopStockFromList(List<ShopStock> stock)
         {
             try
             {
                 await using var database = new ShopKeepContext();
-                foreach (ShopStock item in stock)
+                foreach (var item in stock)
                 {
                     database.ShopStockPrice.Add(item.ShopStockPrice);
                     item.ShopStockPriceId = item.ShopStockPrice.Id;
@@ -82,7 +101,7 @@ namespace ShopKeepDB.Operations.Create
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
             {
                 return false;
             }

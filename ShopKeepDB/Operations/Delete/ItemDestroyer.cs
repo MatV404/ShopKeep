@@ -13,6 +13,9 @@ namespace ShopKeepDB.Operations.Delete
 {
     public static class ItemDestroyer
     {
+        /// <summary>
+        /// Removes item and every record attached to it.
+        /// </summary>
         public static async Task<bool> DeleteItem(Item item)
         {
             try
@@ -20,6 +23,8 @@ namespace ShopKeepDB.Operations.Delete
                 await using var database = new ShopKeepContext();
                 database.Item.Remove(item);
                 database.BaseItemPrice.Remove(item.BaseItemPrice);
+                database.UserItem.RemoveRange(database.UserItem.Where(userItem => userItem.ItemId == item.Id));
+                database.ShopStock.RemoveRange(database.ShopStock.Where(stock => stock.ItemId == item.Id));
                 await database.SaveChangesAsync();
                 return true;
             }
@@ -29,6 +34,9 @@ namespace ShopKeepDB.Operations.Delete
             }
         }
 
+        /// <summary>
+        /// Removes items and every record attached to them.
+        /// </summary>
         public static async Task<bool> DeleteItems(List<Item> items)
         {
             try
@@ -38,6 +46,8 @@ namespace ShopKeepDB.Operations.Delete
                 foreach (var item in items)
                 {
                     database.BaseItemPrice.Remove(item.BaseItemPrice);
+                    database.UserItem.RemoveRange(database.UserItem.Where(userItem => userItem.ItemId == item.Id));
+                    database.ShopStock.RemoveRange(database.ShopStock.Where(stock => stock.ItemId == item.Id));
                 }
                 await database.SaveChangesAsync();
                 return true;

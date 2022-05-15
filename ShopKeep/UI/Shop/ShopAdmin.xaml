@@ -47,7 +47,7 @@
                    Foreground="{ThemeResource HeadingColor}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"
-                   Text="{x:Bind CurrentShop.Name}" />
+                   Text="{x:Bind _currentShop.Name}" />
 
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
@@ -64,7 +64,7 @@
                   VerticalAlignment="Bottom"
                   Height="350"
                   Name="ShopStock"
-                  ItemsSource="{x:Bind CurrentShopStock}"
+                  ItemsSource="{x:Bind _currentShopStock}"
                   Background="{ThemeResource InteractiveElementColor}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:ShopStock">
@@ -123,7 +123,7 @@
                    FontSize="25"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"
-                   Text="{x:Bind CurrentShop.Type.Name}"/>
+                   Text="{x:Bind _currentShop.Type.Name}"/>
         <TextBlock Grid.Column="3" 
                    Grid.Row="1"
                    FontSize="25"
@@ -134,7 +134,7 @@
                    FontSize="25"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
-                   Text="{x:Bind CurrentShop.Locale}" />
+                   Text="{x:Bind _currentShop.Locale}" />
         <TextBlock Grid.Column="3" 
                    Grid.Row="1"
                    FontSize="25"
@@ -145,7 +145,7 @@
                    FontSize="25"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Bottom"
-                   Text="{x:Bind CurrentShop.Owner}" />
+                   Text="{x:Bind _currentShop.Owner}" />
         <TextBlock Grid.Row="2"
                    Grid.Column="3"
                    Grid.ColumnSpan="2"
@@ -162,7 +162,7 @@
                    Height="160"
                    FontSize="25"
                    TextWrapping="Wrap"
-                   Text="{x:Bind CurrentShop.Description}"/>
+                   Text="{x:Bind _currentShop.Description}"/>
         <controls:NumberBox Grid.Column="6"
                             Grid.Row="1"
                             HorizontalAlignment="Right"
@@ -262,40 +262,55 @@
                 Click="RegenerateStockAsync"
                 FontSize="25">Generate New Stock</Button>
 
-        <TextBlock Grid.Column="7"
-                   Grid.Row="3"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Name="GoldDifference"
-                   FontSize="25"
-                   Text="" />
+        <controls:NumberBox Grid.Row="6"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Width="200"
+                            Header="New Gold Price"
+                            FontSize="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Name="NewGoldPriceBox" />
 
-        <TextBlock Grid.Column="7"
-                   Grid.Row="3"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center"
-                   Name="SilverDifference"
-                   FontSize="25"
-                   Text="" />
+        <controls:NumberBox Grid.Row="6"
+                 Grid.Column="3"
+                 Grid.ColumnSpan="2"
+                 Width="200"
+                 Header="New Silver Price"
+                 FontSize="25"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Stretch"
+                 Name="NewSilverPriceBox" />
 
-        <TextBlock Grid.Column="7"
-                   Grid.Row="3"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Bottom"
-                   FontSize="25"
-                   Name="CopperDifference"
-                   Text="" />
+        <controls:NumberBox Grid.Row="7"
+                            Grid.Column="3"
+                            Grid.ColumnSpan="2"
+                            Width="200"
+                            Header="New Silver Price"
+                            FontSize="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Name="NewCopperPriceBox" />
+
+        <Button Grid.Row="7"
+                Grid.Column="4"
+                Width="200"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Height="80"
+                FontSize="25"
+                Click="ChangeStockPriceAsync">Change Price</Button>
 
         <Button Grid.Column="7"
-                    Grid.Row="8"
+                    Grid.Row="9"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
                     Width="200"
                     Height="80"
                     FontSize="25"
                     Click="BackToShops">Back</Button>
-        <Button Grid.Row="7"
-                Grid.Column="7"
+        <Button Grid.Row="9"
+                Grid.Column="6"
                 Width="200"
                 Height="80"
                 FontSize="25"
@@ -332,7 +347,7 @@
                           Height="150"
                           Width="200"
                           HorizontalAlignment="Center"
-                          ItemsSource="{x:Bind FoundItems}">
+                          ItemsSource="{x:Bind _foundItems}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Item">
                             <Grid>

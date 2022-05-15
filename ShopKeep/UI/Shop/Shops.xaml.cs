@@ -27,10 +27,10 @@ namespace ShopKeep.UI.Shop
     /// </summary>
     public sealed partial class Shops : Page
     {
-        private ObservableCollection<ShopKeepDB.Models.Shop> ShopCollection = new ObservableCollection<ShopKeepDB.Models.Shop>();
-        private string[] Locales = ShopKeepDB.Misc.Constants.ShopLocales;
-        private List<Type> Types;
-        private User CurrentUser;
+        private ObservableCollection<ShopKeepDB.Models.Shop> _shopCollection = new ObservableCollection<ShopKeepDB.Models.Shop>();
+        private string[] _locales = ShopKeepDB.Misc.Constants.ShopLocales;
+        private List<Type> _types;
+        private User _currentUser;
 
         public Shops()
         {
@@ -41,17 +41,17 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateShopsAsync()
         {
-            var Shops = await ShopKeepDB.Operations.Retrievals.ShopGetter.GetAllShopsAsync();
-            foreach (var shop in Shops)
+            var shops = await ShopKeepDB.Operations.Retrievals.ShopGetter.GetAllShopsAsync();
+            foreach (var shop in shops)
             {
-                ShopCollection.Add(shop);
+                _shopCollection.Add(shop);
             }
         }
 
         private async void PopulateTypesAsync()
         {
-            Types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
-            if (Types == null)
+            _types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
+            if (_types == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to load Types.");
             }
@@ -61,7 +61,7 @@ namespace ShopKeep.UI.Shop
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            CurrentUser = arguments.Parameter as User;
+            _currentUser = arguments.Parameter as User;
         }
 
         private void BackToMenu(object sender, RoutedEventArgs e)
@@ -77,8 +77,8 @@ namespace ShopKeep.UI.Shop
             int? typeId = ((Type) ShopType.SelectedItem)?.Id;
             List<ShopKeepDB.Models.Shop> filteredShops =
                 await ShopKeepDB.Operations.Retrievals.ShopGetter.FilterShopsAsync(name, owner, typeId, locale);
-            ShopCollection.Clear();
-            filteredShops.ForEach(shop => ShopCollection.Add(shop));
+            _shopCollection.Clear();
+            filteredShops.ForEach(shop => _shopCollection.Add(shop));
         }
 
         private void ClearFilters(object sender, RoutedEventArgs e)
@@ -87,23 +87,23 @@ namespace ShopKeep.UI.Shop
             OwnerName.Text = "";
             ShopLocale.SelectedItem = null;
             ShopType.SelectedItem = null;
-            ShopCollection.Clear();
+            _shopCollection.Clear();
             PopulateShopsAsync();
         }
 
         private void OnShopSelection(object sender, SelectionChangedEventArgs e)
         {
-            if (!CurrentUser.IsAdmin)
+            if (!_currentUser.IsAdmin)
             {
                 Frame.Navigate(typeof(Shop),
                     new Tuple<ShopKeepDB.Models.Shop, User>((ShopKeepDB.Models.Shop) ShopsView.SelectedItem,
-                        CurrentUser));
+                        _currentUser));
             }
             else
             {
                 Frame.Navigate(typeof(ShopAdmin),
                     new Tuple<ShopKeepDB.Models.Shop, User>((ShopKeepDB.Models.Shop)ShopsView.SelectedItem,
-                        CurrentUser));
+                        _currentUser));
             }
         }
     }

@@ -47,7 +47,7 @@
                   VerticalAlignment="Stretch"
                   SelectionChanged="OnShopSelection"
                   Name="ShopsView"
-                  ItemsSource="{x:Bind ShopCollection}"
+                  ItemsSource="{x:Bind _shopCollection}"
                   Background="{ThemeResource InteractiveElementColor}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Shop">
@@ -80,7 +80,7 @@
                       Width="200"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Stretch"
-                      ItemsSource="{x:Bind Types}">
+                      ItemsSource="{x:Bind _types}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="models:Type">
                         <TextBlock Text="{x:Bind Name}" 
@@ -96,7 +96,7 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Stretch"
                       Width="200" 
-                      ItemsSource="{x:Bind Locales}"/>
+                      ItemsSource="{x:Bind _locales}"/>
             <Button Grid.Column="3"
                     Grid.Row="3"
                     VerticalAlignment="Bottom"

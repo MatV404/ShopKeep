@@ -25,7 +25,7 @@ namespace ShopKeep.UI
     public sealed partial class ChangePassword : Page
     {
 
-        private User currentUser;
+        private ShopKeepDB.Models.User _currentUser;
         public ChangePassword()
         {
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace ShopKeep.UI
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            currentUser = e.Parameter as User;
+            _currentUser = e.Parameter as ShopKeepDB.Models.User;
         }
 
         private void BackToMenu(object sender, RoutedEventArgs e)
@@ -51,7 +51,7 @@ namespace ShopKeep.UI
                 return;
             }
 
-            if (!await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserPassword(currentUser, newPass))
+            if (!await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserPassword(_currentUser, newPass))
             {
                 PopupMessage.Message("Password update failed.");
                 return;

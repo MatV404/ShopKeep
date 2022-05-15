@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Retrievals;
@@ -11,6 +12,11 @@ namespace ShopKeepDB.Operations.Delete
 {
     public static class ShopDestroyer
     {
+        /// <summary>
+        /// Deletes the given shop and all of its ShopStock items along with their prices.
+        /// </summary>
+        /// <param name="shop">The shop object that will be removed from the database.</param>
+        /// <returns>True if everything was successful, else false.</returns>
         public static async Task<bool> DeleteShopAsync(Shop shop)
         {
             try
@@ -26,7 +32,7 @@ namespace ShopKeepDB.Operations.Delete
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateConcurrencyException or DbUpdateException)
             {
                 return false;
             }

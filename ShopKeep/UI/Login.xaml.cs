@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Security;
+using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using ShopKeep.UI.Admin;
-using ShopKeep.UI.User;
+using ShopKeep.UI.UserUI;
 using ShopKeepDB.Misc;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -41,7 +42,7 @@ namespace ShopKeep.UI
                     Frame.Navigate(typeof(AdminMenu), loginResult.Item2);
                     return;
                 case LoginResults.User:
-                    Frame.Navigate(typeof(RegularMenu), loginResult.Item2);
+                    Frame.Navigate(typeof(UserMenu), loginResult.Item2);
                     return;
                 case LoginResults.Invalid:
                     PopupMessage.Message("Invalid credentials entered.");

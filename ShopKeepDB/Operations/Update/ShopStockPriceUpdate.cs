@@ -8,15 +8,17 @@ using ShopKeepDB.Models;
 
 namespace ShopKeepDB.Operations.Update
 {
-    public static class UserItemUpdate
+    public static class ShopStockPriceUpdate
     {
-        public static async Task<bool> ChangeUserItemAmountAsync(UserItem item, int newAmount)
+        public static async Task<bool> UpdateShopStockPriceAsync(ShopStockPrice price, int gold, int silver, int copper)
         {
             try
             {
                 await using var database = new ShopKeepContext();
-                database.UserItem.Update(item);
-                item.Amount = newAmount;
+                database.ShopStockPrice.Update(price);
+                price.Gold = gold;
+                price.Silver = silver;
+                price.Copper = copper;
                 await database.SaveChangesAsync();
                 return true;
             }

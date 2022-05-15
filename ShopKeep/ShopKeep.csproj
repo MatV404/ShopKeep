@@ -143,13 +143,13 @@
     <Compile Include="UI\Register.xaml.cs">
       <DependentUpon>Register.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\User\Inventory.xaml.cs">
+    <Compile Include="UI\UserUI\Inventory.xaml.cs">
       <DependentUpon>Inventory.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\User\UserMenu.xaml.cs">
+    <Compile Include="UI\UserUI\UserMenu.xaml.cs">
       <DependentUpon>UserMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\User\Users.xaml.cs">
+    <Compile Include="UI\UserUI\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Shop\CreateShop.xaml.cs">
@@ -220,15 +220,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\User\Inventory.xaml">
+    <Page Include="UI\UserUI\Inventory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\User\UserMenu.xaml">
+    <Page Include="UI\UserUI\UserMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\User\Users.xaml">
+    <Page Include="UI\UserUI\Users.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,7 +261,6 @@
       <Version>2.7.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ShopKeepDB\ShopKeepDB.csproj">
       <Project>{896e192d-a429-4904-9b72-50a28fcc750e}</Project>

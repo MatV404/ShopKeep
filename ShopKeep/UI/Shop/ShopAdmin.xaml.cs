@@ -19,6 +19,7 @@ using ShopKeepDB.Controls;
 using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Delete;
+using ShopKeepDB.Operations.Update;
 using ShopKeepDB.StockGeneration;
 using ShopKeepDB.TransactionMisc;
 
@@ -31,19 +32,19 @@ namespace ShopKeep.UI.Shop
     /// </summary>
     public sealed partial class ShopAdmin : Page
     {
-        private ShopKeepDB.Models.Shop CurrentShop;
-        private User CurrentUser;
-        private ObservableCollection<ShopStock> CurrentShopStock = new ObservableCollection<ShopStock>();
+        private ShopKeepDB.Models.Shop _currentShop;
+        private User _currentUser;
+        private ObservableCollection<ShopStock> _currentShopStock = new ObservableCollection<ShopStock>();
 
-        private ObservableCollection<ShopKeepDB.Models.Item> FoundItems =
+        private ObservableCollection<ShopKeepDB.Models.Item> _foundItems =
             new ObservableCollection<ShopKeepDB.Models.Item>();
 
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            Tuple<ShopKeepDB.Models.Shop, User> args = (Tuple<ShopKeepDB.Models.Shop, User>)arguments.Parameter;
-            CurrentShop = args.Item1;
-            CurrentUser = args.Item2;
+            var (shop, user) = (Tuple<ShopKeepDB.Models.Shop, User>)arguments.Parameter;
+            _currentShop = shop;
+            _currentUser = user;
             PopulateRelevantCollections();
         }
 
@@ -54,8 +55,8 @@ namespace ShopKeep.UI.Shop
 
         private async Task PopulateShopStockAsync()
         {
-            var stock = await ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(CurrentShop.Id);
-            stock.ForEach(stockItem => CurrentShopStock.Add(stockItem));
+            var stock = await ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id);
+            stock.ForEach(stockItem => _currentShopStock.Add(stockItem));
         }
         
         private void BackToShops(object sender, RoutedEventArgs e)
@@ -63,6 +64,11 @@ namespace ShopKeep.UI.Shop
             Frame.GoBack();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindItemIdClick(object sender, RoutedEventArgs e)
         {
             if (!FindItemPopup.IsOpen)
@@ -71,12 +77,15 @@ namespace ShopKeep.UI.Shop
             }
         }
 
+        /// <summary>
+        /// Closes the item ID find popup.
+        /// </summary>
         private void ClosePopupClicked(object sender, RoutedEventArgs e)
         {
             if (FindItemPopup.IsOpen)
             {
                 FindItemPopup.IsOpen = false;
-                FoundItems.Clear();
+                _foundItems.Clear();
                 FinderName.Text = "";
             }
         }
@@ -89,8 +98,8 @@ namespace ShopKeep.UI.Shop
                 var result = await
                     ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName, null, null, int.MinValue, int.MaxValue,
                         int.MinValue, int.MaxValue, int.MinValue, int.MaxValue);
-                FoundItems.Clear();
-                result.ForEach(item => FoundItems.Add(item));
+                _foundItems.Clear();
+                result.ForEach(item => _foundItems.Add(item));
             }
         }
 
@@ -134,7 +143,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            if (await ShopKeepDB.Operations.Retrievals.ShopStockGetter.ShopStockExistsAsync(CurrentShop.Id,
+            if (await ShopKeepDB.Operations.Retrievals.ShopStockGetter.ShopStockExistsAsync(_currentShop.Id,
                     itemId))
             {
                 PopupMessage.Message("Item is already in stock.");
@@ -143,19 +152,21 @@ namespace ShopKeep.UI.Shop
 
 
             ShopStock newStock = await
-                ShopKeepDB.Operations.Create.ShopStockCreator.CreateShopStock(CurrentShop.Id, itemId, amount, goldPrice, silverPrice,
+                ShopKeepDB.Operations.Create.ShopStockCreator.CreateShopStock(_currentShop.Id, itemId, amount, goldPrice, silverPrice,
                     copperPrice);
 
             if (newStock == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to add the item into the shop.");
+                return;
             }
             newStock.Item = queryResult;
-            CurrentShopStock.Add(newStock);
-            return;
-
+            _currentShopStock.Add(newStock);
         }
 
+        /// <summary>
+        /// As the name suggests, this method removes selected stock from the shop.
+        /// </summary>
         private async void RemoveFromStockAsync(object sender, RoutedEventArgs e)
         {
             var selected = ShopStock.SelectedItem as ShopStock;
@@ -175,12 +186,12 @@ namespace ShopKeep.UI.Shop
                     PopupMessage.Message("A database error occurred while removing the item from stock.");
                 }
 
-                CurrentShopStock.Remove(selected);
+                _currentShopStock.Remove(selected);
                 AddToBuyButton.IsEnabled = true;
                 return;
             }
 
-            result = await ShopKeepDB.Operations.Update.ShopStockUpdate.ChangeShopStockAmountAsync(selected,
+            result = await ShopStockUpdate.ChangeShopStockAmountAsync(selected,
                 selected.Amount - amount);
             if (!result)
             {
@@ -189,10 +200,12 @@ namespace ShopKeep.UI.Shop
             AddToBuyButton.IsEnabled = true;
         }
         
-
+        /// <summary>
+        /// Deletes the entire shop.
+        /// </summary>
         private async void DeleteShopClick(object sender, RoutedEventArgs e)
         {
-            var deleted = await ShopDestroyer.DeleteShopAsync(CurrentShop);
+            var deleted = await ShopDestroyer.DeleteShopAsync(_currentShop);
             if (deleted)
             {
                 Frame.GoBack();
@@ -202,15 +215,18 @@ namespace ShopKeep.UI.Shop
         }
         private async Task<bool> RemoveAllStock()
         {
-            if (!await ShopStockRemover.RemoveShopStockAsync(CurrentShopStock.ToList()))
+            if (!await ShopStockRemover.RemoveShopStockAsync(_currentShopStock.ToList()))
             {
                 PopupMessage.Message("Couldn't remove shop stock. Aborting.");
                 return false;
             }
-            CurrentShopStock.Clear();
+            _currentShopStock.Clear();
             return true;
         }
 
+        /// <summary>
+        /// Deletes the old shop stock and generates new shop stock.
+        /// </summary>
         private async void RegenerateStockAsync(object sender, RoutedEventArgs e)
         {
             StockGeneration.IsEnabled = false;
@@ -220,7 +236,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            StockGenerationWrapper generation = new StockGenerationWrapper(CurrentShop);
+            StockGenerationWrapper generation = new StockGenerationWrapper(_currentShop);
             if (!await generation.GenerateStockAsync())
             {
                 PopupMessage.Message("Stock generation failed.");
@@ -231,10 +247,13 @@ namespace ShopKeep.UI.Shop
             StockGeneration.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Prints all stock into the file named after the given shop.
+        /// </summary>
         private async void TransferStockToTextAsync(object sender, RoutedEventArgs e)
         {
             StockToTextButton.IsEnabled = false;
-            string result = await StockWriter.StockToFile(CurrentShop, CurrentShopStock.ToList());
+            string result = await StockWriter.StockToFile(_currentShop, _currentShopStock.ToList());
             if (result != "")
             {
                 PopupMessage.Message($"Stock written to {result} successfully!");
@@ -248,6 +267,41 @@ namespace ShopKeep.UI.Shop
         public ShopAdmin()
         {
             InitializeComponent();
+        }
+
+        private async void ChangeStockPriceAsync(object sender, RoutedEventArgs e)
+        {
+            var selected = ShopStock.SelectedItem as ShopStock;
+            var newGoldPrice = (int) NewGoldPriceBox.Value;
+            var newSilverPrice = (int) NewSilverPriceBox.Value;
+            var newCopperPrice = (int) NewCopperPriceBox.Value;
+            if (selected == null)
+            {
+                PopupMessage.Message("No item selected.");
+                return;
+            }
+
+            if (newGoldPrice < 0 || newSilverPrice < 0 || newCopperPrice < 0)
+            {
+                PopupMessage.Message("Can't set a negative price!");
+                return;
+            }
+
+            if (newGoldPrice == 0 && newSilverPrice == 0 && newCopperPrice == 0)
+            {
+                PopupMessage.Message("Price can't be 0!");
+            }
+
+            if (!await ShopStockPriceUpdate.UpdateShopStockPriceAsync(selected.ShopStockPrice, newGoldPrice, newSilverPrice, newCopperPrice))
+            {
+                PopupMessage.Message("Failed to update price due to a database error.");
+                return;
+            }
+
+            _currentShopStock.Remove(selected);
+            _currentShopStock.Add(selected);
+
+
         }
     }
 }

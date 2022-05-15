@@ -25,17 +25,13 @@ namespace ShopKeepDB.StockGeneration
 
         private List<Item> DetermineItemPool(string rarity)
         {
-            switch (rarity)
+            return rarity switch
             {
-                case "Common":
-                    return _commonItems;
-                case "Uncommon":
-                    return _uncommonItems;
-                case "Rare":
-                    return _rareItems;
-                default:
-                    return _otherItems;
-            }
+                "Common" => _commonItems,
+                "Uncommon" => _uncommonItems,
+                "Rare" => _rareItems,
+                _ => _otherItems
+            };
         }
 
         private void GenerateShopStockItem(string rarity, List<ShopStock> shopStockList)
@@ -57,8 +53,10 @@ namespace ShopKeepDB.StockGeneration
             ShopStockPrice price = PriceGenerator.GeneratePrice(_minPricePercentageDifference,
                 _maxPricePercentageDifference,
                 item.BaseItemPrice);
-            var stock = new ShopStock(_shop.Id, item.Id, amount);
-            stock.ShopStockPrice = price;
+            var stock = new ShopStock(_shop.Id, item.Id, amount)
+            {
+                ShopStockPrice = price
+            };
             shopStockList.Add(stock);
         }
 

@@ -14,26 +14,21 @@ namespace ShopKeepDB.StockGeneration
 
         public async Task<bool> GenerateStockAsync()
         {
-            ItemGenerator generator = new ItemGenerator(_shop);
+            ItemGenerator generator = new(_shop);
             return await generator.GenerateShopStock(_generationCount);
         }
 
         private int DetermineGenerationCount(string shopLocale)
         {
-            Random randGen = new Random();
-            switch (shopLocale)
+            Random randGen = new();
+            return shopLocale switch
             {
-                default:
-                    return randGen.Next(5, 10);
-                case "Rural":
-                    return randGen.Next(5, 20);
-                case "Town":
-                    return randGen.Next(10, 25);
-                case "City":
-                    return randGen.Next(15, 30);
-                case "Metropolitan":
-                    return randGen.Next(15, 35);
-            }
+                "Rural" => randGen.Next(5, 20),
+                "Town" => randGen.Next(10, 30),
+                "City" => randGen.Next(15, 40),
+                "Metropolitan" => randGen.Next(20, 50),
+                _ => randGen.Next(5, 10)
+            };
         }
 
         public StockGenerationWrapper(Shop shop)

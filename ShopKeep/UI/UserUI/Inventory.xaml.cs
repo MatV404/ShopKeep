@@ -9,7 +9,7 @@ using Type = ShopKeepDB.Models.Type;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace ShopKeep.UI.User
+namespace ShopKeep.UI.UserUI
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -17,16 +17,16 @@ namespace ShopKeep.UI.User
     public sealed partial class Inventory : Page
     {
 
-        private ShopKeepDB.Models.User CurrentUser;
-        private ObservableCollection<UserItem> InventoryItems = new ObservableCollection<UserItem>();
-        private ObservableCollection<string> Rarities = new ObservableCollection<string>();
-        private ObservableCollection<Type> Types = new ObservableCollection<Type>();
+        private User _currentUser;
+        private ObservableCollection<UserItem> _inventoryItems = new ObservableCollection<UserItem>();
+        private ObservableCollection<string> _rarities = new ObservableCollection<string>();
+        private ObservableCollection<Type> _types = new ObservableCollection<Type>();
         public Inventory()
         {
             InitializeComponent();
             foreach (var rarity in ShopKeepDB.Misc.Constants.Rarities)
             {
-                Rarities.Add(rarity);
+                _rarities.Add(rarity);
             }
             PopulateTypesAsync();
         }
@@ -35,7 +35,7 @@ namespace ShopKeep.UI.User
         {
             base.OnNavigatedTo(arguments);
             Tuple<ShopKeepDB.Models.User, bool> args = (Tuple<ShopKeepDB.Models.User, bool>) arguments.Parameter;
-            CurrentUser = args.Item1;
+            _currentUser = args.Item1;
             PopulateItemsAsync();
             if (!args.Item2)
             {
@@ -52,10 +52,11 @@ namespace ShopKeep.UI.User
 
         private async void PopulateItemsAsync()
         {
-            var items = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(CurrentUser.Name);
+            _inventoryItems.Clear();
+            var items = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name);
             foreach (var item in items)
             {
-                InventoryItems.Add(item);
+                _inventoryItems.Add(item);
             }
         }
 
@@ -64,7 +65,7 @@ namespace ShopKeep.UI.User
             var types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
             foreach (var type in types)
             {
-                Types.Add(type);
+                _types.Add(type);
             }
         }
 
@@ -75,7 +76,7 @@ namespace ShopKeep.UI.User
 
         private async void BanUser(object sender, RoutedEventArgs e)
         {
-            var banResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(CurrentUser, false);
+            var banResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, false);
             PopupMessage.Message(banResult ? "User banned." : "Ban failed.", "Okay");
         }
 
@@ -87,15 +88,15 @@ namespace ShopKeep.UI.User
                 : ItemRarityBox.SelectionBoxItem.ToString();
             int? itemTypeId = ((Type) ItemTypeBox.SelectionBoxItem)?.Id;
             var results =
-                await ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(CurrentUser.Name, itemName,
+                await ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(_currentUser.Name, itemName,
                     itemRarity, itemTypeId);
             if (results == null)
             {
                 PopupMessage.Message("Something went wrong with the database while filtering items.");
                 return;
             }
-            InventoryItems.Clear();
-            results.ForEach(item => InventoryItems.Add(item));
+            _inventoryItems.Clear();
+            results.ForEach(item => _inventoryItems.Add(item));
         }
 
         private void ClearFilterClick(object sender, RoutedEventArgs e)
@@ -103,7 +104,7 @@ namespace ShopKeep.UI.User
             ItemNameBox.Text = "";
             ItemRarityBox.SelectedItem = null;
             ItemTypeBox.SelectedItem = null;
-            InventoryItems.Clear();
+            _inventoryItems.Clear();
             PopulateItemsAsync();
         }
 
@@ -153,6 +154,7 @@ namespace ShopKeep.UI.User
                 
             }
 
+            PopulateItemsAsync();
             if (!updateResult)
             {
                 PopupMessage.Message("One or more of the items were not updated due to a database issue.");
@@ -162,17 +164,23 @@ namespace ShopKeep.UI.User
 
         }
 
+        /// <summary>
+        /// Admin-only function. Changes user balance.
+        /// </summary>
         private async void ChangeBalanceClick(object sender, RoutedEventArgs e)
         {
-            int goldChange = (int)(GoldBox.Value >= 0 ? GoldBox.Value : CurrentUser.Coins.Gold);
-            int silverChange = (int)(SilverBox.Value >= 0 ? SilverBox.Value : CurrentUser.Coins.Silver);
-            int copperChange = (int)(CopperBox.Value >= 0 ? CopperBox.Value : CurrentUser.Coins.Copper);
+            int goldChange = (int)(GoldBox.Value >= 0 ? GoldBox.Value : _currentUser.Coins.Gold);
+            int silverChange = (int)(SilverBox.Value >= 0 ? SilverBox.Value : _currentUser.Coins.Silver);
+            int copperChange = (int)(CopperBox.Value >= 0 ? CopperBox.Value : _currentUser.Coins.Copper);
 
-            var result = await ShopKeepDB.Operations.Update.CoinsUpdate.UpdateCoins(CurrentUser.Coins, goldChange, 
+            var result = await ShopKeepDB.Operations.Update.CoinsUpdate.UpdateCoins(_currentUser.Coins, goldChange, 
                                                                                         silverChange, copperChange);
             if (result)
             {
-                PopupMessage.Message($"{CurrentUser.Name}'s balance changed.");
+                PopupMessage.Message($"{_currentUser.Name}'s balance changed.");
+                GoldText.Text = goldChange.ToString();
+                SilverText.Text = silverChange.ToString();
+                CopperText.Text = copperChange.ToString();
                 return;
             }
             PopupMessage.Message("Something went wrong, balance likely not changed.");
@@ -180,7 +188,7 @@ namespace ShopKeep.UI.User
 
         private async void UnbanUser(object sender, RoutedEventArgs e)
         {
-            var unbanResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(CurrentUser, true);
+            var unbanResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, true);
             PopupMessage.Message(unbanResult ? "User unbanned." : "Unban failed.", "Okay");
         }
     }

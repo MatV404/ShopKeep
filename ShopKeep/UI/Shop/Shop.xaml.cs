@@ -31,9 +31,6 @@ namespace ShopKeep.UI.Shop
         private CoinTracker _coinLossTracker = new CoinTracker();
         private CoinTracker _coinGainTracker = new CoinTracker();
 
-        private ObservableCollection<ShopKeepDB.Models.Item> _foundItems =
-            new ObservableCollection<ShopKeepDB.Models.Item>();
-
         public Shop()
         {
             InitializeComponent();
@@ -82,6 +79,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
+            int inBuyAmount = 0;
             var existingItem =
                 _buyStock.FirstOrDefault(buyStock => buyStock.OriginalShopStock.ItemId == selected.ItemId);
             if (existingItem != null)
@@ -90,8 +88,9 @@ namespace ShopKeep.UI.Shop
                 _coinLossTracker.UpdateValues(existingItem.TotalPriceGold * -1,
                                               existingItem.TotalPriceSilver * -1,
                                               existingItem.TotalPriceCopper * -1);
-                amount = (amount + existingItem.Amount > selected.Amount) ? selected.Amount : existingItem.Amount + amount;
+                inBuyAmount = existingItem.Amount;
             }
+            amount = (amount + inBuyAmount > selected.Amount) ? selected.Amount : amount + inBuyAmount;
             BuyStock toBuy = new BuyStock(selected, amount);
             _buyStock.Add(toBuy);
             _coinLossTracker.UpdateValues(toBuy.TotalPriceGold, toBuy.TotalPriceSilver, toBuy.TotalPriceCopper);
@@ -172,6 +171,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
+            int inSellAmount = 0;
             var existingItem = _saleItems.FirstOrDefault(saleItem => saleItem.OriginalUserItem.ItemId == item.ItemId);
             if (existingItem != null)
             {
@@ -179,8 +179,9 @@ namespace ShopKeep.UI.Shop
                 _coinGainTracker.UpdateValues(existingItem.TotalPriceGold * -1,
                                               existingItem.TotalPriceSilver * -1,
                                               existingItem.TotalPriceCopper * -1);
-                amount = (amount + existingItem.Amount > item.Amount) ? item.Amount : existingItem.Amount + amount;
+                inSellAmount = existingItem.Amount;
             }
+            amount = (amount + inSellAmount > item.Amount) ? item.Amount : amount + inSellAmount;
             SaleItem toSell = new SaleItem(item, amount);
             _saleItems.Add(toSell);
             DataContext = _coinGainTracker;
