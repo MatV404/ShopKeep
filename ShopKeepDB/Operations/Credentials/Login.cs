@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Configuration;
 using System.Data.Common;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
@@ -16,34 +13,30 @@ namespace ShopKeepDB.Operations.Credentials
         {
             try
             {
-                await using var database = new ShopKeepContext(); 
-                var query = await database.User.Include(user => user.Coins)
-                                                    .FirstOrDefaultAsync(user => user.Name == username);
+                await using var database = new ShopKeepContext();
+                var user = await Retrievals.UserGetter.GetUserByUsername(username);
 
-                if (query == null)
+                if (user == null)
+                {
+                    return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
+                } 
+
+                if (!Password.ValidateUserPassword(password, user.Salt, user.Password))
                 {
                     return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
                 }
 
-                var salt = query.Salt;
-                var passHash = Hashing.CreateHash(password, Convert.FromBase64String(salt));
-
-                if (!query.Password.Equals(Convert.ToBase64String(passHash)))
-                {
-                    return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
-                }
-
-                if (!query.IsActive)
+                if (!user.IsActive)
                 {
                     return new Tuple<LoginResults, User>(LoginResults.Banned, null);
                 }
 
-                if (query.IsAdmin)
+                if (user.IsAdmin)
                 {
-                    return new Tuple<LoginResults, User>(LoginResults.Admin, query);
+                    return new Tuple<LoginResults, User>(LoginResults.Admin, user);
                 }
 
-                return new Tuple<LoginResults, User>(LoginResults.User, query);
+                return new Tuple<LoginResults, User>(LoginResults.User, user);
             }
             catch (DbException)
             {

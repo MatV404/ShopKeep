@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using ShopKeepDB.TransactionMisc;
 
 namespace ShopKeepDB.Operations.Create
 {
@@ -48,20 +49,20 @@ namespace ShopKeepDB.Operations.Create
         /// <param name="itemList">A list of UserItems</param>
         /// <param name="shopId">The id of the given shop.</param>
         /// <returns>True if the operation succeeded, false on failure.</returns>
-        public static async Task<bool> CreateOrUpdateShopStock(List<UserItem> itemList, int shopId)
+        public static async Task<bool> CreateOrUpdateShopStock(List<SaleItem> itemList, int shopId)
         {
             try
             {
                 await using var database = new ShopKeepContext();
                 foreach (var item in itemList)
                 {
-                    var shopStock = await database.ShopStock.FindAsync(shopId, item.ItemId);
+                    var shopStock = await database.ShopStock.FindAsync(shopId, item.OriginalUserItem.ItemId);
                     if (shopStock == null)
                     {
-                        ShopStockPrice price = new ShopStockPrice(item.Item.BaseItemPrice.Gold,
-                                                                  item.Item.BaseItemPrice.Silver,
-                                                                  item.Item.BaseItemPrice.Copper);
-                        ShopStock newStock = new ShopStock(shopId, item.ItemId, item.Amount, price.Id);
+                        ShopStockPrice price = new ShopStockPrice(item.OriginalUserItem.Item.BaseItemPrice.Gold,
+                                                                  item.OriginalUserItem.Item.BaseItemPrice.Silver,
+                                                                  item.OriginalUserItem.Item.BaseItemPrice.Copper);
+                        ShopStock newStock = new ShopStock(shopId, item.OriginalUserItem.ItemId, item.Amount, price.Id);
                         newStock.ShopStockPrice = price;
                         await database.ShopStockPrice.AddAsync(price);
                         await database.ShopStock.AddAsync(newStock);

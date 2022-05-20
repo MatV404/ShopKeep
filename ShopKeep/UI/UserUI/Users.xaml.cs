@@ -15,7 +15,7 @@ namespace ShopKeep.UI.UserUI
     /// </summary>
     public sealed partial class Users : Page
     {
-        public ObservableCollection<ShopKeepDB.Models.User> UserList { get; set; } = new ObservableCollection<ShopKeepDB.Models.User>();
+        public ObservableCollection<User> UserList { get; set; } = new ObservableCollection<ShopKeepDB.Models.User>();
 
         public Users()
         {

@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Credentials;
@@ -32,15 +33,22 @@ namespace ShopKeepDB.Operations.Update
         {
             try
             {
-                var hashedPass = Hashing.CreateHash(password, Convert.FromBase64String(user.Salt));
-                var hashedPassString = Convert.ToBase64String(hashedPass);
+                var hashResult = Password.CreatePasswordHash(password);
+                if (hashResult == null)
+                {
+                    return false;
+                }
+                var salt = hashResult.Item1;
+                var hashedPassword = hashResult.Item2;
                 await using var database = new ShopKeepContext();
                 database.User.Update(user);
-                user.Password = hashedPassString;
+                user.Password = hashedPassword;
+                user.Salt = salt;
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateException 
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }

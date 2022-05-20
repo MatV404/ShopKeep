@@ -33,7 +33,7 @@ namespace ShopKeep.UI
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _currentUser = e.Parameter as ShopKeepDB.Models.User;
+            _currentUser = e.Parameter as User;
         }
 
         private void BackToMenu(object sender, RoutedEventArgs e)

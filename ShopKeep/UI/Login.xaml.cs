@@ -13,9 +13,6 @@ using ShopKeepDB.Misc;
 
 namespace ShopKeep.UI
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class Login : Page
     {
         public Login()
@@ -25,14 +22,20 @@ namespace ShopKeep.UI
 
         private async void LoginSubmit(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Username.Text) || String.IsNullOrWhiteSpace(Password.Password))
+            this.LoginButton.IsEnabled = false;
+            this.RegisterButton.IsEnabled = false;
+            string userName = Username.Text;
+            string userPass = Password.Password;
+            if (String.IsNullOrWhiteSpace(userName) || String.IsNullOrWhiteSpace(userPass))
             {
                 PopupMessage.Message("Login failed - both username and password must be filled out.");
                 return;
             }
 
             var loginResult =
-                await ShopKeepDB.Operations.Credentials.Login.ValidateLoginAsync(Username.Text, Password.Password);
+                await Task.Run(() => ShopKeepDB.Operations.Credentials.Login.ValidateLoginAsync(userName, userPass));
+            this.LoginButton.IsEnabled = true;
+            this.RegisterButton.IsEnabled = true;
             switch (loginResult.Item1)
             {
                 case LoginResults.Banned:

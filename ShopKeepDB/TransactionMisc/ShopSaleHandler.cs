@@ -14,7 +14,7 @@ namespace ShopKeepDB.TransactionMisc
     {
         private List<UserItem> _toDelete;
         private List<SaleItem> _updateFailed;
-        private List<UserItem> _successfulSales;
+        private List<SaleItem> _successfulSales;
         private Shop _shop;
         private ObservableCollection<SaleItem> _toSell;
         private CoinTracker _tracker;
@@ -38,7 +38,7 @@ namespace ShopKeepDB.TransactionMisc
                 var result = await item.SellAsync();
                 if (result != SingleTransactionResult.TransactionFailure)
                 {
-                    _successfulSales.Add(item.OriginalUserItem);
+                    _successfulSales.Add(item);
                     if (result == SingleTransactionResult.ItemSoldOut)
                     {
                         _toDelete.Add(item.OriginalUserItem);
@@ -71,7 +71,7 @@ namespace ShopKeepDB.TransactionMisc
         {
             _toDelete = new List<UserItem>();
             _updateFailed = new List<SaleItem>();
-            _successfulSales = new List<UserItem>();
+            _successfulSales = new List<SaleItem>();
             _shop = shop;
             _tracker = tracker;
             _toSell = toSell;

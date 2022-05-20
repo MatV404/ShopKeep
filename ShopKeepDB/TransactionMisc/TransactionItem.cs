@@ -10,14 +10,14 @@ namespace ShopKeepDB.TransactionMisc
         public int TotalPriceSilver { get; protected set; }
         public int TotalPriceCopper { get; protected set; }
         public int Amount { get; protected set; }
-
+        
         private void SetPricing(int gold, int silver, int copper)
         {
             int normalizedCopper = copper % 10;
-            silver = silver + copper / 10;
+            silver += copper / 10;
 
             int normalizedSilver = silver % 10;
-            gold = gold + silver / 10;
+            gold += silver / 10;
 
             TotalPriceGold = gold;
             TotalPriceSilver = normalizedSilver;

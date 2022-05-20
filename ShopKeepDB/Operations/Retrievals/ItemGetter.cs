@@ -34,10 +34,10 @@ namespace ShopKeepDB.Operations.Retrievals
                                && item.ItemTypes.Any(type => type.TypeId == (itemType == null ? type.TypeId : itemType.Id))
                                && item.Rarity == (string.IsNullOrWhiteSpace(itemRarity) ? item.Rarity : itemRarity))
                 .Where(item => item.BaseItemPrice.Copper >= copperMin && item.BaseItemPrice.Copper <= copperMax
-                                                                      && item.BaseItemPrice.Silver >= silverMin &&
-                                                                      item.BaseItemPrice.Silver <= silverMax
-                                                                      && item.BaseItemPrice.Gold >= goldMin &&
-                                                                      item.BaseItemPrice.Gold <= goldMax);
+                                                                      && item.BaseItemPrice.Silver >= silverMin 
+                                                                      && item.BaseItemPrice.Silver <= silverMax
+                                                                      && item.BaseItemPrice.Gold >= goldMin 
+                                                                      && item.BaseItemPrice.Gold <= goldMax);
             return await items.ToListAsync();
         }
 

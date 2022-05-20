@@ -39,8 +39,8 @@
                 Click="LoginSubmit"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                Name="LoginButton"
                 Background="{ThemeResource InteractiveElementColor}"
-                Foreground="{ThemeResource RegularTextColor}"
                 Margin="0 140 0 0">Log in</Button>
         <Button Height="40" 
                 Width="120" 
@@ -49,7 +49,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="{ThemeResource InteractiveElementColor}"
-                Foreground="{ThemeResource RegularTextColor}"
+                Name="RegisterButton"
                 Margin="0 250 0 0">Register</Button>
 
     </Grid>

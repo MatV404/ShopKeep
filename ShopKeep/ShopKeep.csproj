@@ -155,9 +155,6 @@
     <Compile Include="UI\Shop\CreateShop.xaml.cs">
       <DependentUpon>CreateShop.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shop\DeleteShops.xaml.cs">
-      <DependentUpon>DeleteShops.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Shop\Shop.xaml.cs">
       <DependentUpon>Shop.xaml</DependentUpon>
     </Compile>
@@ -233,10 +230,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Shop\CreateShop.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Shop\DeleteShops.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

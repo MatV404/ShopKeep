@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
@@ -23,14 +20,23 @@ namespace ShopKeepDB.Operations.Credentials
                     {
                         return RegistrationResults.RegistrationFailure;
                     }
-                    var salt = Hashing.GenerateSalt();
-                    var hashedPass = Hashing.CreateHash(password, salt);
-                    string convertedPass = Convert.ToBase64String(hashedPass);
-                    string convertedSalt = Convert.ToBase64String(salt);
-                    User newUser = new(username, convertedPass, convertedSalt);
+                    
+                    var hashResult = Password.CreatePasswordHash(password);
+                    
+                    if (hashResult == null)
+                    {
+                        return RegistrationResults.RegistrationFailure;
+                    }
+
+                    var salt = hashResult.Item1;
+                    var hashedPass = hashResult.Item2;
+                    User newUser = new(username, hashedPass, salt);
+
                     var coinsQuery = await database.Coins.AddAsync(new Coins());
                     newUser.Coins = coinsQuery.Entity;
+                    
                     var userQuery = await database.User.AddAsync(newUser);
+                    
                     await database.SaveChangesAsync();
                     return RegistrationResults.RegistrationSuccess;
                 }
@@ -39,7 +45,7 @@ namespace ShopKeepDB.Operations.Credentials
                     return RegistrationResults.RegistrationFailure;
                 }
             }
-            catch (DbException)
+            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
             {
                 return RegistrationResults.DbError;
             }

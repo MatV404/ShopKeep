@@ -39,7 +39,7 @@ namespace ShopKeep.UI.Shop
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            Tuple<ShopKeepDB.Models.Shop, User> args = (Tuple<ShopKeepDB.Models.Shop, User>) arguments.Parameter;
+            Tuple<ShopKeepDB.Models.Shop, User> args = (Tuple<ShopKeepDB.Models.Shop, User>)arguments.Parameter;
             _currentShop = args.Item1;
             _currentUser = args.Item2;
             this.DataContext = this;

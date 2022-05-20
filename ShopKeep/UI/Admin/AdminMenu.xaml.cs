@@ -50,11 +50,6 @@ namespace ShopKeep.UI.Admin
             Frame.Navigate(typeof(CreateShop));
         }
 
-        private void DeleteShopsClick(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(DeleteShops));
-        }
-
         private void ManageItemsClick(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Items));

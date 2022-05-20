@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using ShopKeepDB.Models;
+using ShopKeepDB.Operations.Delete;
 using Type = ShopKeepDB.Models.Type;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -34,7 +35,7 @@ namespace ShopKeep.UI.UserUI
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            Tuple<ShopKeepDB.Models.User, bool> args = (Tuple<ShopKeepDB.Models.User, bool>) arguments.Parameter;
+            Tuple<User, bool> args = (Tuple<User, bool>) arguments.Parameter;
             _currentUser = args.Item1;
             PopulateItemsAsync();
             if (!args.Item2)
@@ -47,6 +48,7 @@ namespace ShopKeep.UI.UserUI
                 RemoveItemButton.Visibility = Visibility.Collapsed;
                 BanButton.Visibility = Visibility.Collapsed;
                 UnbanButton.Visibility = Visibility.Collapsed;
+                DeleteUserButton.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -76,6 +78,10 @@ namespace ShopKeep.UI.UserUI
 
         private async void BanUser(object sender, RoutedEventArgs e)
         {
+            if (!_currentUser.IsActive)
+            {
+                return;
+            }
             var banResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, false);
             PopupMessage.Message(banResult ? "User banned." : "Ban failed.", "Okay");
         }
@@ -188,8 +194,23 @@ namespace ShopKeep.UI.UserUI
 
         private async void UnbanUser(object sender, RoutedEventArgs e)
         {
+            if (_currentUser.IsActive)
+            {
+                return;
+            }
             var unbanResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, true);
             PopupMessage.Message(unbanResult ? "User unbanned." : "Unban failed.", "Okay");
+        }
+
+        private async void DeleteUserAsync(object sender, RoutedEventArgs e)
+        {
+            if (!await UserDeleter.DeleteUser(_currentUser))
+            {
+                PopupMessage.Message("Failed to delete user.");
+                return;
+            }
+
+            this.Frame.GoBack();
         }
     }
 }

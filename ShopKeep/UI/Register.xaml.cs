@@ -3,6 +3,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ShopKeepDB.Misc;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,7 +26,11 @@ namespace ShopKeep.UI
 
         private async void RegistrationClick(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Username.Text) || String.IsNullOrWhiteSpace(Password.Password))
+            this.BackButton.IsEnabled = false;
+            this.RegisterButton.IsEnabled = false;
+            string registerName = Username.Text;
+            string registerPass = Password.Password;
+            if (String.IsNullOrWhiteSpace(registerName) || String.IsNullOrWhiteSpace(registerPass))
             {
                 PopupMessage.Message("Registration failed - both username and password must be filled out.",
                                      "Okay");
@@ -34,8 +39,9 @@ namespace ShopKeep.UI
 
 
             RegistrationResults result =
-                await ShopKeepDB.Operations.Credentials.Register.RegisterAsync(Username.Text, Password.Password);
-            //await Registration.Register(Username.Text, Password.Password);
+                await Task.Run(() => ShopKeepDB.Operations.Credentials.Register.RegisterAsync(registerName, registerPass));
+            this.BackButton.IsEnabled = true;
+            this.RegisterButton.IsEnabled = true;
             switch (result)
             {
                 case RegistrationResults.RegistrationFailure:
@@ -43,7 +49,7 @@ namespace ShopKeep.UI
                                          "Okay");
                     return;
                 case RegistrationResults.RegistrationSuccess:
-                    Frame.Navigate(typeof(Login));
+                    PopupMessage.Message("Your registration was successful!");
                     return;
                 case RegistrationResults.DbError:
                     PopupMessage.Message("A database error occurred. Please, contact the administrator.",

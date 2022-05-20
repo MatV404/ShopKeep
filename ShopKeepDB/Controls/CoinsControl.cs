@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Update;
 
@@ -28,7 +25,7 @@ namespace ShopKeepDB.Controls
 
             if (copperCoins < 0)
             {
-                silverCoins -= (-1 * copperCoins) / 10;
+                silverCoins -= 1 + (-1 * copperCoins) / 10;
                 copperCoins = 10 - copperCoins % 10;
             }
 
@@ -42,8 +39,9 @@ namespace ShopKeepDB.Controls
 
             if (silverCoins < 0)
             {
-                goldCoins -= (-1 * silverCoins) / 10;
-                silverCoins = 10 - silverCoins % 10;
+                var silvuh = 1 + (-1 * silverCoins) / 10;
+                goldCoins -= silvuh;
+                silverCoins = 10 + silverCoins % 10;
             }
 
             goldCoins += gold;
