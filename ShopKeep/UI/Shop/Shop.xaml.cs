@@ -54,13 +54,13 @@ namespace ShopKeep.UI.Shop
 
         private async Task PopulateShopStockAsync()
         {
-            var stock = await ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id);
+            var stock = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id));
             stock.ForEach(stockItem => _currentShopStock.Add(stockItem));
         }
 
         private async Task PopulateUserInventory()
         {
-            var inventory = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name);
+            var inventory = await Task.Run(() => ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name));
             inventory.ForEach(item => _userItems.Add(item));
         }
 
@@ -69,6 +69,9 @@ namespace ShopKeep.UI.Shop
             Frame.GoBack();
         }
 
+        /// <summary>
+        /// This method handles the purchase of items from the shop.
+        /// </summary>
         private void AddToBuyList(object sender, RoutedEventArgs e)
         {
             ShopStock selected = ShopStock.SelectedItem as ShopStock;
@@ -116,7 +119,7 @@ namespace ShopKeep.UI.Shop
             }
 
             ShopPurchaseHandler handler = new ShopPurchaseHandler(_currentUser, _buyStock, _coinLossTracker);
-            var buyResult = await handler.HandlePurchaseAsync();
+            var buyResult = await Task.Run(() => handler.HandlePurchaseAsync());
             if (buyResult == BulkTransactionResult.Failure)
             {
                 PopupMessage.Message("Purchase failed.");
@@ -130,8 +133,8 @@ namespace ShopKeep.UI.Shop
                 _buyStock.Clear();
             }
 
-            if (!await CoinsControl.UpdateUserCoinsAsync(_currentUser, _coinLossTracker.Gold * -1,
-                    _coinLossTracker.Silver * -1, _coinLossTracker.Copper * -1))
+            if (!await Task.Run(() => CoinsControl.UpdateUserCoinsAsync(_currentUser, _coinLossTracker.Gold * -1,
+                    _coinLossTracker.Silver * -1, _coinLossTracker.Copper * -1)))
             {
                 PopupMessage.Message("Coin update failed. :-( Please, contact a system administrator.");
             }
@@ -199,7 +202,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
             ShopSaleHandler handler = new ShopSaleHandler(_currentShop, _saleItems, _coinGainTracker);
-            var sellResult = await handler.HandleSaleAsync();
+            var sellResult = await Task.Run(() => handler.HandleSaleAsync());
             if (sellResult == BulkTransactionResult.Failure)
             {
                 PopupMessage.Message("Sale failed.");
@@ -214,8 +217,8 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            if (!await CoinsControl.UpdateUserCoinsAsync(_currentUser, _coinGainTracker.Gold, _coinGainTracker.Silver,
-                    _coinGainTracker.Copper))
+            if (!await Task.Run(() => CoinsControl.UpdateUserCoinsAsync(_currentUser, _coinGainTracker.Gold, _coinGainTracker.Silver,
+                    _coinGainTracker.Copper)))
             {
                 PopupMessage.Message("Coin update failed. Please, contact a system administrator.");
             }

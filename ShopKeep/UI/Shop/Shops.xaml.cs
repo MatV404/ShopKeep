@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -41,7 +42,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateShopsAsync()
         {
-            var shops = await ShopKeepDB.Operations.Retrievals.ShopGetter.GetAllShopsAsync();
+            var shops = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopGetter.GetAllShopsAsync());
             foreach (var shop in shops)
             {
                 _shopCollection.Add(shop);
@@ -50,7 +51,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateTypesAsync()
         {
-            _types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
+            _types = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
             if (_types == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to load Types.");
@@ -76,7 +77,7 @@ namespace ShopKeep.UI.Shop
             string locale = ShopLocale.SelectedItem?.ToString();
             int? typeId = ((Type) ShopType.SelectedItem)?.Id;
             List<ShopKeepDB.Models.Shop> filteredShops =
-                await ShopKeepDB.Operations.Retrievals.ShopGetter.FilterShopsAsync(name, owner, typeId, locale);
+                await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopGetter.FilterShopsAsync(name, owner, typeId, locale));
             _shopCollection.Clear();
             filteredShops.ForEach(shop => _shopCollection.Add(shop));
         }

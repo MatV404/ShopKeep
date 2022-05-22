@@ -14,6 +14,7 @@ namespace ShopKeepDB.Operations.Credentials
             try
             {
                 await using var database = new ShopKeepContext();
+                await database.Database.EnsureCreatedAsync();
                 var user = await Retrievals.UserGetter.GetUserByUsername(username);
 
                 if (user == null)

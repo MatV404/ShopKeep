@@ -92,7 +92,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    FontSize="25"
-                   Text="{x:Bind ExaminedItem.Rarity, Mode=TwoWay}" />
+                   Name="RarityText"
+                   Text="{x:Bind ExaminedItem.Rarity}" />
         <TextBlock Grid.Row="2"
                    Grid.Column="3"
                    HorizontalAlignment="Center"
@@ -159,6 +160,7 @@
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                        TextWrapping="Wrap"
+                       Name="DescriptionText"
                        Text="{x:Bind ExaminedItem.Description}" />
         </Frame>
         <controls:NumberBox Grid.Row="5"

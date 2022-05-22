@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -55,7 +56,7 @@ namespace ShopKeep.UI.UserUI
         private async void PopulateItemsAsync()
         {
             _inventoryItems.Clear();
-            var items = await ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name);
+            var items = await Task.Run(() => ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name));
             foreach (var item in items)
             {
                 _inventoryItems.Add(item);
@@ -64,7 +65,7 @@ namespace ShopKeep.UI.UserUI
 
         private async void PopulateTypesAsync()
         {
-            var types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
+            var types = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
             foreach (var type in types)
             {
                 _types.Add(type);
@@ -82,8 +83,8 @@ namespace ShopKeep.UI.UserUI
             {
                 return;
             }
-            var banResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, false);
-            PopupMessage.Message(banResult ? "User banned." : "Ban failed.", "Okay");
+            var banResult = await Task.Run(() => ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, false));
+            PopupMessage.Message(banResult ? "User banned." : "Ban failed.");
         }
 
         private async void FilterItemsClickAsync(object sender, RoutedEventArgs e)
@@ -94,8 +95,8 @@ namespace ShopKeep.UI.UserUI
                 : ItemRarityBox.SelectionBoxItem.ToString();
             int? itemTypeId = ((Type) ItemTypeBox.SelectionBoxItem)?.Id;
             var results =
-                await ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(_currentUser.Name, itemName,
-                    itemRarity, itemTypeId);
+                await Task.Run(() => ShopKeepDB.Operations.Retrievals.UserItemGetter.FilterUserItems(_currentUser.Name, itemName,
+                    itemRarity, itemTypeId));
             if (results == null)
             {
                 PopupMessage.Message("Something went wrong with the database while filtering items.");
@@ -138,7 +139,7 @@ namespace ShopKeep.UI.UserUI
 
             if (toDelete.Count > 0)
             {
-                var result = await ShopKeepDB.Operations.Delete.UserItemRemover.DeleteUserItemsAsync(toDelete);
+                var result = await Task.Run(() => UserItemRemover.DeleteUserItemsAsync(toDelete));
                 if (!result)
                 {
                     PopupMessage.Message("An error occurred while trying to delete items from the inventory.");
@@ -151,8 +152,8 @@ namespace ShopKeep.UI.UserUI
             {
                 foreach (UserItem item in toUpdate)
                 {
-                    if (!await ShopKeepDB.Operations.Update.UserItemUpdate.ChangeUserItemAmountAsync(item,
-                            item.Amount - itemAmount))
+                    if (!await Task.Run(() => ShopKeepDB.Operations.Update.UserItemUpdate.ChangeUserItemAmountAsync(item,
+                            item.Amount - itemAmount)))
                     {
                         updateResult = false;
                     }
@@ -179,8 +180,8 @@ namespace ShopKeep.UI.UserUI
             int silverChange = (int)(SilverBox.Value >= 0 ? SilverBox.Value : _currentUser.Coins.Silver);
             int copperChange = (int)(CopperBox.Value >= 0 ? CopperBox.Value : _currentUser.Coins.Copper);
 
-            var result = await ShopKeepDB.Operations.Update.CoinsUpdate.UpdateCoins(_currentUser.Coins, goldChange, 
-                                                                                        silverChange, copperChange);
+            var result = await Task.Run(() => ShopKeepDB.Operations.Update.CoinsUpdate.UpdateCoins(_currentUser.Coins, goldChange, 
+                                                                                        silverChange, copperChange));
             if (result)
             {
                 PopupMessage.Message($"{_currentUser.Name}'s balance changed.");
@@ -198,13 +199,13 @@ namespace ShopKeep.UI.UserUI
             {
                 return;
             }
-            var unbanResult = await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, true);
+            var unbanResult = await Task.Run(() => ShopKeepDB.Operations.Update.UserUpdate.ChangeUserBanState(_currentUser, true));
             PopupMessage.Message(unbanResult ? "User unbanned." : "Unban failed.", "Okay");
         }
 
         private async void DeleteUserAsync(object sender, RoutedEventArgs e)
         {
-            if (!await UserDeleter.DeleteUser(_currentUser))
+            if (!await Task.Run(() => UserDeleter.DeleteUser(_currentUser)))
             {
                 PopupMessage.Message("Failed to delete user.");
                 return;

@@ -81,8 +81,8 @@ namespace ShopKeep.UI.Item
                 types.Add((Type) type);
             }
 
-            bool result = await ShopKeepDB.Operations.Create.ItemCreator.CreateItemAsync(itemName, itemRarity,
-                ItemDescriptionBox.Text, priceGold, priceSilver, priceCopper, types);
+            bool result = await Task.Run(() => ShopKeepDB.Operations.Create.ItemCreator.CreateItemAsync(itemName, itemRarity,
+                ItemDescriptionBox.Text, priceGold, priceSilver, priceCopper, types));
             if (!result)
             {
                 PopupMessage.Message("Item creation failed.", "Okay");

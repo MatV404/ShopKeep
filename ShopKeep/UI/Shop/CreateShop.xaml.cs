@@ -35,7 +35,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateTypes()
         {
-            var types = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
+            var types = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
             if (_types == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to retrieve all shop types. Please, refresh the page.");
@@ -63,8 +63,8 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            ShopKeepDB.Models.Shop result = await ShopKeepDB.Operations.Create.ShopCreator.CreateShopAsync(shopName, ownerName,
-                shopType.Id, shopLocale, shopDescription);
+            ShopKeepDB.Models.Shop result = await Task.Run(() => ShopKeepDB.Operations.Create.ShopCreator.CreateShopAsync(shopName, ownerName,
+                shopType.Id, shopLocale, shopDescription));
             if (result == null)
             {
                 PopupMessage.Message("Something went wrong with the database while creating the shop. Please, contact the administrator.");
@@ -74,7 +74,7 @@ namespace ShopKeep.UI.Shop
             if (generateStock)
             {
                 StockGenerationWrapper generation = new StockGenerationWrapper(result);
-                if (!await generation.GenerateStockAsync())
+                if (!await Task.Run(() => generation.GenerateStockAsync()))
                 {
                     PopupMessage.Message("Some of the items were not generated properly.");
                 }

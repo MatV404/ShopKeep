@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -43,8 +44,8 @@ namespace ShopKeep.UI.Item
         private async void PopulateExaminedTypes()
         {
             ExaminedTypes =
-                await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesByIdAsync(
-                    ExaminedItem.ItemTypes.Select(itemType => itemType.TypeId).ToList());
+                await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesByIdAsync(
+                    ExaminedItem.ItemTypes.Select(itemType => itemType.TypeId).ToList()));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
@@ -58,8 +59,7 @@ namespace ShopKeep.UI.Item
         {
             Frame.GoBack();
         }
-
-        //ToDo: Figure out how to refresh the textbox stuff.
+        
         private async void EditItemAsync(object sender, RoutedEventArgs e)
         {
             string itemName = String.IsNullOrWhiteSpace(ItemName.Text) ? ExaminedItem.Name : ItemName.Text;
@@ -76,8 +76,13 @@ namespace ShopKeep.UI.Item
             int copperPrice = CopperPrice.Value >= 0
                 ? (int) CopperPrice.Value
                 : ExaminedItem.BaseItemPrice.Copper;
-            var item = await ShopKeepDB.Operations.Update.ItemUpdate.UpdateItemAsync(ExaminedItem, itemName, itemRarity, 
-                                                                          itemDescription, goldPrice, silverPrice, copperPrice);
+            var item = await Task.Run(() => ShopKeepDB.Operations.Update.ItemUpdate.UpdateItemAsync(ExaminedItem, itemName, itemRarity, 
+                                                                          itemDescription, goldPrice, silverPrice, copperPrice));
+            this.CopperPrice.Value = item.BaseItemPrice.Copper;
+            this.SilverPrice.Value = item.BaseItemPrice.Silver;
+            this.GoldPrice.Value = item.BaseItemPrice.Gold;
+            this.RarityText.Text = item.Rarity;
+            this.DescriptionText.Text = item.Description;
         }
 
         private async void RemoveTypesFromItemAsync(object sender, RoutedEventArgs e)
@@ -94,7 +99,7 @@ namespace ShopKeep.UI.Item
                 selectedTypeIds.Add(item.Id);
             }
 
-            var result = await ShopKeepDB.Operations.Delete.ItemTypeRemover.RemoveItemTypes(ExaminedItem.Id, selectedTypeIds);
+            var result = await Task.Run(() => ShopKeepDB.Operations.Delete.ItemTypeRemover.RemoveItemTypes(ExaminedItem.Id, selectedTypeIds));
             if (!result)
             {
                 PopupMessage.Message("Something went wrong while removing types.", "What a shame.");

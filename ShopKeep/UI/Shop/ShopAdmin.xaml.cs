@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.Misc;
-using ShopKeepDB.Controls;
-using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Delete;
 using ShopKeepDB.Operations.Update;
 using ShopKeepDB.StockGeneration;
-using ShopKeepDB.TransactionMisc;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -55,7 +43,7 @@ namespace ShopKeep.UI.Shop
 
         private async Task PopulateShopStockAsync()
         {
-            var stock = await ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id);
+            var stock = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id));
             stock.ForEach(stockItem => _currentShopStock.Add(stockItem));
         }
         
@@ -95,9 +83,9 @@ namespace ShopKeep.UI.Shop
             string itemName = FinderName.Text;
             if (!string.IsNullOrWhiteSpace(itemName))
             {
-                var result = await
+                var result = await Task.Run(() => 
                     ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName, null, null, int.MinValue, int.MaxValue,
-                        int.MinValue, int.MaxValue, int.MinValue, int.MaxValue);
+                        int.MinValue, int.MaxValue, int.MinValue, int.MaxValue));
                 _foundItems.Clear();
                 result.ForEach(item => _foundItems.Add(item));
             }
@@ -135,7 +123,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            ShopKeepDB.Models.Item queryResult = await ShopKeepDB.Operations.Retrievals.ItemGetter.RetrieveItem(itemId);
+            ShopKeepDB.Models.Item queryResult = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ItemGetter.RetrieveItem(itemId));
 
             if (queryResult == null)
             {
@@ -143,8 +131,8 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            if (await ShopKeepDB.Operations.Retrievals.ShopStockGetter.ShopStockExistsAsync(_currentShop.Id,
-                    itemId))
+            if (await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.ShopStockExistsAsync(_currentShop.Id,
+                    itemId)))
             {
                 PopupMessage.Message("Item is already in stock.");
                 return;
@@ -152,8 +140,8 @@ namespace ShopKeep.UI.Shop
 
 
             ShopStock newStock = await
-                ShopKeepDB.Operations.Create.ShopStockCreator.CreateShopStock(_currentShop.Id, itemId, amount, goldPrice, silverPrice,
-                    copperPrice);
+                Task.Run(() => ShopKeepDB.Operations.Create.ShopStockCreator.CreateShopStock(_currentShop.Id, itemId, amount, goldPrice, silverPrice,
+                    copperPrice));
 
             if (newStock == null)
             {
@@ -180,7 +168,7 @@ namespace ShopKeep.UI.Shop
             bool result;
             if (selected.Amount <= amount || amount <= 0)
             {
-                result = await ShopStockRemover.RemoveShopStockAsync(selected);
+                result = await Task.Run(() => ShopStockRemover.RemoveShopStockAsync(selected));
                 if (!result)
                 {
                     PopupMessage.Message("A database error occurred while removing the item from stock.");
@@ -191,8 +179,8 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            result = await ShopStockUpdate.ChangeShopStockAmountAsync(selected,
-                selected.Amount - amount);
+            result = await Task.Run(() => ShopStockUpdate.ChangeShopStockAmountAsync(selected,
+                selected.Amount - amount));
             if (!result)
             {
                 PopupMessage.Message("A database error occurred while changing the item stock amount.");
@@ -205,7 +193,7 @@ namespace ShopKeep.UI.Shop
         /// </summary>
         private async void DeleteShopClick(object sender, RoutedEventArgs e)
         {
-            var deleted = await ShopDestroyer.DeleteShopAsync(_currentShop);
+            var deleted = await Task.Run(() => ShopDestroyer.DeleteShopAsync(_currentShop));
             if (deleted)
             {
                 Frame.GoBack();
@@ -215,7 +203,7 @@ namespace ShopKeep.UI.Shop
         }
         private async Task<bool> RemoveAllStock()
         {
-            if (!await ShopStockRemover.RemoveShopStockAsync(_currentShopStock.ToList()))
+            if (!await Task.Run(() => ShopStockRemover.RemoveShopStockAsync(_currentShopStock.ToList())))
             {
                 PopupMessage.Message("Couldn't remove shop stock. Aborting.");
                 return false;
@@ -237,13 +225,13 @@ namespace ShopKeep.UI.Shop
             }
 
             StockGenerationWrapper generation = new StockGenerationWrapper(_currentShop);
-            if (!await generation.GenerateStockAsync())
+            if (!await Task.Run(() => generation.GenerateStockAsync()))
             {
                 PopupMessage.Message("Stock generation failed.");
                 StockGeneration.IsEnabled = true;
                 return;
             }
-            await PopulateShopStockAsync();
+            PopulateRelevantCollections();
             StockGeneration.IsEnabled = true;
         }
 
@@ -253,7 +241,7 @@ namespace ShopKeep.UI.Shop
         private async void TransferStockToTextAsync(object sender, RoutedEventArgs e)
         {
             StockToTextButton.IsEnabled = false;
-            string result = await StockWriter.StockToFile(_currentShop, _currentShopStock.ToList());
+            string result = await Task.Run(() => StockWriter.StockToFile(_currentShop, _currentShopStock.ToList()));
             if (result != "")
             {
                 PopupMessage.Message($"Stock written to {result} successfully!");
@@ -292,7 +280,8 @@ namespace ShopKeep.UI.Shop
                 PopupMessage.Message("Price can't be 0!");
             }
 
-            if (!await ShopStockPriceUpdate.UpdateShopStockPriceAsync(selected.ShopStockPrice, newGoldPrice, newSilverPrice, newCopperPrice))
+            if (!await Task.Run(() => ShopStockPriceUpdate.UpdateShopStockPriceAsync(selected.ShopStockPrice, newGoldPrice, 
+                                                                                             newSilverPrice, newCopperPrice)))
             {
                 PopupMessage.Message("Failed to update price due to a database error.");
                 return;

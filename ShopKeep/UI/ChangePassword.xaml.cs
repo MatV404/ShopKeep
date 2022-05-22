@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -51,7 +52,7 @@ namespace ShopKeep.UI
                 return;
             }
 
-            if (!await ShopKeepDB.Operations.Update.UserUpdate.ChangeUserPassword(_currentUser, newPass))
+            if (!await Task.Run(() => ShopKeepDB.Operations.Update.UserUpdate.ChangeUserPassword(_currentUser, newPass)))
             {
                 PopupMessage.Message("Password update failed.");
                 return;

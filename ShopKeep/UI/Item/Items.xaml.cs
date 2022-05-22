@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Type = ShopKeepDB.Models.Type;
@@ -37,13 +38,13 @@ namespace ShopKeep.UI.Item
 
         private async void PopulateTypes()
         {
-            var contents = await ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync();
+            var contents = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
             contents.ForEach(type => Types.Add(type));
         }
 
         private async void PopulateAllItems()
         {
-            var contents = await ShopKeepDB.Operations.Retrievals.ItemGetter.GetAllItemsAsync();
+            var contents = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ItemGetter.GetAllItemsAsync());
             contents.ForEach(item => AllItems.Add(item));
         }
 
@@ -63,9 +64,9 @@ namespace ShopKeep.UI.Item
             int maxSilver = PriceMaxSilver.Value >= 0 ? (int) PriceMaxSilver.Value : int.MaxValue;
             int minCopper = PriceMinCopper.Value >= 0 ? (int) PriceMinCopper.Value : 0;
             int maxCopper = PriceMaxCopper.Value >= 0 ? (int) PriceMaxCopper.Value : int.MaxValue;
-            var result = await ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName,  itemType, itemRarity, 
+            var result = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName,  itemType, itemRarity, 
                                                                                           minGold, maxGold, minSilver, 
-                                                                                          maxSilver, minCopper, maxCopper);
+                                                                                          maxSilver, minCopper, maxCopper));
             AllItems.Clear();
             foreach (ShopKeepDB.Models.Item item in result)
             {
@@ -99,10 +100,10 @@ namespace ShopKeep.UI.Item
             int maxSilver = PriceMaxSilver.Value >= 0 ? (int)PriceMaxSilver.Value : int.MaxValue;
             int minCopper = PriceMinCopper.Value >= 0 ? (int)PriceMinCopper.Value : 0;
             int maxCopper = PriceMaxCopper.Value >= 0 ? (int)PriceMaxCopper.Value : int.MaxValue;
-            var toDelete = await ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName, itemType, itemRarity,
+            var toDelete = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName, itemType, itemRarity,
                 minGold, maxGold, minSilver,
-                maxSilver, minCopper, maxCopper);
-            await ItemDestroyer.DeleteItems(toDelete);
+                maxSilver, minCopper, maxCopper));
+            await Task.Run(() => ItemDestroyer.DeleteItems(toDelete));
             ClearFilter(null, null);
         }
 

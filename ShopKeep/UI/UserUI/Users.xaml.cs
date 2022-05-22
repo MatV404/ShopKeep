@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ShopKeepDB.Models;
@@ -25,7 +26,7 @@ namespace ShopKeep.UI.UserUI
 
         private async void PopulateUsers()
         {
-            var usersList = await UserGetter.GetAllRegularUsers();
+            var usersList = await Task.Run(() => UserGetter.GetAllRegularUsers());
             if (usersList == null)
             {
                 PopupMessage.Message("A database error occurred. Please, refresh the page.", "Okay...");
@@ -53,14 +54,14 @@ namespace ShopKeep.UI.UserUI
         {
             string userNameFilter = string.IsNullOrWhiteSpace(UserName.Text) ? "" : UserName.Text;
             
-            List<ShopKeepDB.Models.User> foundUsers = await UserGetter.FilterUsers(userNameFilter);
+            List<User> foundUsers = await Task.Run(() => UserGetter.FilterUsers(userNameFilter));
             if (foundUsers == null)
             {
                 PopupMessage.Message("A database error occurred.", "Aww...");
                 return;
             }
             UserList.Clear();
-            foreach (ShopKeepDB.Models.User user in foundUsers)
+            foreach (User user in foundUsers)
             {
                 UserList.Add(user);
             }
@@ -68,7 +69,7 @@ namespace ShopKeep.UI.UserUI
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Frame.Navigate(typeof(Inventory), new Tuple<ShopKeepDB.Models.User, bool>((ShopKeepDB.Models.User) UserView.SelectedItem, true));
+            Frame.Navigate(typeof(Inventory), new Tuple<User, bool>((User) UserView.SelectedItem, true));
         }
     }
 }
