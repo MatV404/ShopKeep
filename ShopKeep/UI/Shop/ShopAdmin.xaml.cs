@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
@@ -7,11 +6,11 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.Misc;
 using ShopKeepDB.Models;
+using ShopKeepDB.Operations.Create;
 using ShopKeepDB.Operations.Delete;
+using ShopKeepDB.Operations.Retrievals;
 using ShopKeepDB.Operations.Update;
 using ShopKeepDB.StockGeneration;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace ShopKeep.UI.Shop
 {
@@ -21,18 +20,15 @@ namespace ShopKeep.UI.Shop
     public sealed partial class ShopAdmin : Page
     {
         private ShopKeepDB.Models.Shop _currentShop;
-        private User _currentUser;
-        private ObservableCollection<ShopStock> _currentShopStock = new ObservableCollection<ShopStock>();
+        private readonly ObservableCollection<ShopStock> _currentShopStock = new ObservableCollection<ShopStock>();
 
-        private ObservableCollection<ShopKeepDB.Models.Item> _foundItems =
-            new ObservableCollection<ShopKeepDB.Models.Item>();
+        private readonly ObservableCollection<ShopKeepDB.Models.Item> _foundItems = new ObservableCollection<ShopKeepDB.Models.Item>();
 
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            var (shop, user) = (Tuple<ShopKeepDB.Models.Shop, User>)arguments.Parameter;
+            var shop = (ShopKeepDB.Models.Shop) arguments.Parameter;
             _currentShop = shop;
-            _currentUser = user;
             PopulateRelevantCollections();
         }
 
@@ -43,10 +39,10 @@ namespace ShopKeep.UI.Shop
 
         private async Task PopulateShopStockAsync()
         {
-            var stock = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id));
+            var stock = await Task.Run(() => ShopStockGetter.GetShopStock(_currentShop.Id));
             stock.ForEach(stockItem => _currentShopStock.Add(stockItem));
         }
-        
+
         private void BackToShops(object sender, RoutedEventArgs e)
         {
             Frame.GoBack();
@@ -83,8 +79,8 @@ namespace ShopKeep.UI.Shop
             string itemName = FinderName.Text;
             if (!string.IsNullOrWhiteSpace(itemName))
             {
-                var result = await Task.Run(() => 
-                    ShopKeepDB.Operations.Retrievals.ItemGetter.FilterItemsAsync(itemName, null, null, int.MinValue, int.MaxValue,
+                var result = await Task.Run(() =>
+                    ItemGetter.FilterItemsAsync(itemName, null, null, int.MinValue, int.MaxValue,
                         int.MinValue, int.MaxValue, int.MinValue, int.MaxValue));
                 _foundItems.Clear();
                 result.ForEach(item => _foundItems.Add(item));
@@ -107,15 +103,9 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            int goldPrice = (int)GoldPriceItemBox.Value;
-            int silverPrice = (int)SilverPriceItemBox.Value;
-            int copperPrice = (int)CopperPriceItemBox.Value;
-
-            if (goldPrice < 0 || silverPrice < 0 || copperPrice < 0)
-            {
-                PopupMessage.Message("Invalid input: One of the prices is less than 0.");
-                return;
-            }
+            int goldPrice = (int)(GoldPriceItemBox.Value >= 0 ? GoldPriceItemBox.Value : 0);
+            int silverPrice = (int)(SilverPriceItemBox.Value >= 0 ? SilverPriceItemBox.Value : 0);
+            int copperPrice = (int)(CopperPriceItemBox.Value >= 0 ? CopperPriceItemBox.Value : 0);
 
             if (goldPrice == 0 && silverPrice == 0 && copperPrice == 0)
             {
@@ -123,7 +113,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            ShopKeepDB.Models.Item queryResult = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ItemGetter.RetrieveItem(itemId));
+            ShopKeepDB.Models.Item queryResult = await Task.Run(() => ItemGetter.RetrieveItem(itemId));
 
             if (queryResult == null)
             {
@@ -131,7 +121,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            if (await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.ShopStockExistsAsync(_currentShop.Id,
+            if (await Task.Run(() => ShopStockGetter.ShopStockExistsAsync(_currentShop.Id,
                     itemId)))
             {
                 PopupMessage.Message("Item is already in stock.");
@@ -140,7 +130,7 @@ namespace ShopKeep.UI.Shop
 
 
             ShopStock newStock = await
-                Task.Run(() => ShopKeepDB.Operations.Create.ShopStockCreator.CreateShopStock(_currentShop.Id, itemId, amount, goldPrice, silverPrice,
+                Task.Run(() => ShopStockCreator.CreateShopStock(_currentShop.Id, itemId, amount, goldPrice, silverPrice,
                     copperPrice));
 
             if (newStock == null)
@@ -161,7 +151,7 @@ namespace ShopKeep.UI.Shop
             var amount = (int)BuyAmount.Value;
             if (selected == null)
             {
-                PopupMessage.Message("No item selected.");
+                PopupMessage.Message("No item selected");
                 return;
             }
             AddToBuyButton.IsEnabled = false;
@@ -185,9 +175,11 @@ namespace ShopKeep.UI.Shop
             {
                 PopupMessage.Message("A database error occurred while changing the item stock amount.");
             }
+            _currentShopStock.Remove(selected);
+            _currentShopStock.Add(selected);
             AddToBuyButton.IsEnabled = true;
         }
-        
+
         /// <summary>
         /// Deletes the entire shop.
         /// </summary>
@@ -260,27 +252,22 @@ namespace ShopKeep.UI.Shop
         private async void ChangeStockPriceAsync(object sender, RoutedEventArgs e)
         {
             var selected = ShopStock.SelectedItem as ShopStock;
-            var newGoldPrice = (int) NewGoldPriceBox.Value;
-            var newSilverPrice = (int) NewSilverPriceBox.Value;
-            var newCopperPrice = (int) NewCopperPriceBox.Value;
+            var newGoldPrice = (int)(NewGoldPriceBox.Value >= 0 ? NewGoldPriceBox.Value : 0);
+            var newSilverPrice = (int)(NewSilverPriceBox.Value >= 0 ? NewSilverPriceBox.Value : 0);
+            var newCopperPrice = (int)(NewCopperPriceBox.Value >= 0 ? NewCopperPriceBox.Value : 0);
             if (selected == null)
             {
                 PopupMessage.Message("No item selected.");
                 return;
             }
 
-            if (newGoldPrice < 0 || newSilverPrice < 0 || newCopperPrice < 0)
-            {
-                PopupMessage.Message("Can't set a negative price!");
-                return;
-            }
-
             if (newGoldPrice == 0 && newSilverPrice == 0 && newCopperPrice == 0)
             {
                 PopupMessage.Message("Price can't be 0!");
+                return;
             }
 
-            if (!await Task.Run(() => ShopStockPriceUpdate.UpdateShopStockPriceAsync(selected.ShopStockPrice, newGoldPrice, 
+            if (!await Task.Run(() => ShopStockPriceUpdate.UpdateShopStockPriceAsync(selected.ShopStockPrice, newGoldPrice,
                                                                                              newSilverPrice, newCopperPrice)))
             {
                 PopupMessage.Message("Failed to update price due to a database error.");

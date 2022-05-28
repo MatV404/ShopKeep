@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeepDB.Operations.Create
 {
     public static class ItemCreator
     {
-        
+
         /// <summary>
         /// Creates a given item, along with the BaseItemPrice table entry associated with it.
         /// </summary>
@@ -24,7 +22,7 @@ namespace ShopKeepDB.Operations.Create
         /// <param name="copperPrice">Price of the item in Copper</param>
         /// <param name="itemTypes">A list of Types the item should fall under.</param>
         /// <returns>True if no problem occurs, false on an exception thrown.</returns>
-        public static async Task<bool> CreateItemAsync(string itemName, string itemRarity, string itemDescription, int goldPrice, 
+        public static async Task<bool> CreateItemAsync(string itemName, string itemRarity, string itemDescription, int goldPrice,
                                                        int silverPrice, int copperPrice, List<Type> itemTypes)
         {
             try
@@ -45,11 +43,13 @@ namespace ShopKeepDB.Operations.Create
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
+            catch (Exception e) when (e is ArgumentException 
+                                        or DbUpdateException 
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }
-            
+
         }
     }
 }

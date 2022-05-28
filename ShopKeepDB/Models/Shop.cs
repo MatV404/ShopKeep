@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShopKeepDB.Models
+﻿namespace ShopKeepDB.Models
 {
     public class Shop
     {
@@ -15,9 +11,9 @@ namespace ShopKeepDB.Models
         public int TypeId { get; set; }
         public Type Type { get; set; }
 
-        public Shop(){}
+        public Shop() { }
 
-        public Shop(string name, string locale, string description, 
+        public Shop(string name, string locale, string description,
             string owner, int typeId)
         {
             Name = name;

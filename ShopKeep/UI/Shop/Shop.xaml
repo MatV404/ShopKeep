@@ -169,6 +169,9 @@
                  HorizontalAlignment="Left"
                  Header="Stock Amount"
                  Name="BuyAmount"
+                 Maximum="10000"
+                 Minimum="1"
+                 Value="1"
                  FontSize="25"
                  Width="200"/>
 
@@ -179,7 +182,10 @@
                             Width="200"
                             FontSize="25"
                             Header="Item Amount"
-                            Name="SellAmount"/>
+                            Name="SellAmount"
+                            Value="1"
+                            Maximum="10000"
+                            Minimum="1"/>
 
         <Button Grid.Column="1"
                 Grid.Row="9"
@@ -380,7 +386,7 @@
                   Grid.RowSpan="3"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Bottom"
-                  FontSize="25"
+                  FontSize="20"
                   Height="270"
                   Name="PurchaseView"
                   ItemsSource="{x:Bind _buyStock}"
@@ -449,7 +455,7 @@
                   Grid.RowSpan="3"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Bottom"
-                  FontSize="25"
+                  FontSize="20"
                   Height="270"
                   Name="SaleView"
                   SelectionChanged="RemoveFromSale"
@@ -517,7 +523,7 @@
                   Grid.RowSpan="3"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Bottom"
-                  FontSize="25"
+                  FontSize="20"
                   Height="270"
                   Name="InventoryView"
                   ItemsSource="{x:Bind _userItems}"

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShopKeepDB.Misc
+﻿namespace ShopKeepDB.Misc
 {
+    /// <summary>
+    /// This enum captures the result of a purchase or sale within a shop.
+    /// </summary>
     public enum BulkTransactionResult
     {
         Success,

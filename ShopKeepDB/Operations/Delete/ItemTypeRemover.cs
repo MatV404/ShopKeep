@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopKeepDB.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ShopKeepDB.Context;
 
 namespace ShopKeepDB.Operations.Delete
 {
@@ -26,7 +26,9 @@ namespace ShopKeepDB.Operations.Delete
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) when (e is DbUpdateConcurrencyException or DbUpdateException)
+            catch (Exception e) when (e is ArgumentException
+                                        or DbUpdateException
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }

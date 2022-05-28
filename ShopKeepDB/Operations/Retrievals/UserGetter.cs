@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Retrievals
 {
@@ -21,7 +19,8 @@ namespace ShopKeepDB.Operations.Retrievals
                                      .Where(user => !user.IsAdmin)
                                      .ToListAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException
+                                        or ArgumentException)
             {
                 return null;
             }
@@ -36,7 +35,8 @@ namespace ShopKeepDB.Operations.Retrievals
                                           .Where(user => user.Name.Contains(userName))
                                           .ToListAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException
+                                        or ArgumentException)
             {
                 return null;
             }
@@ -51,7 +51,8 @@ namespace ShopKeepDB.Operations.Retrievals
                                           .Where(user => user.Name == userName)
                                           .FirstOrDefaultAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException
+                                        or ArgumentException)
             {
                 return null;
             }

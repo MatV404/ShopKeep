@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ShopKeepDB.Models;
+using System;
 using System.Threading.Tasks;
-using ShopKeepDB.Models;
-using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeepDB.StockGeneration
 {
     public class StockGenerationWrapper
     {
-        private int _generationCount;
-        private Shop _shop;
+        private readonly int _generationCount;
+        private readonly Shop _shop;
 
         public async Task<bool> GenerateStockAsync()
         {

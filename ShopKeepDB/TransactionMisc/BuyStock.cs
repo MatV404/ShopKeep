@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ShopKeepDB.Misc;
+﻿using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Update;
-using ShopKeepDB.TransactionMisc;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.TransactionMisc
 {
+    /// <summary>
+    /// Represents a ShopStock object ready to be bought.
+    /// </summary>
     public class BuyStock : TransactionItem
     {
         public ShopStock OriginalShopStock { get; }
 
-        public BuyStock(ShopStock original, int amount) : base(amount, 
-                                                               original.ShopStockPrice.Gold, 
-                                                               original.ShopStockPrice.Silver, 
+        public BuyStock(ShopStock original, int amount) : base(amount,
+                                                               original.ShopStockPrice.Gold,
+                                                               original.ShopStockPrice.Silver,
                                                                original.ShopStockPrice.Copper)
         {
             OriginalShopStock = original;

@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using ShopKeep.Misc;
 using ShopKeepDB.Controls;
 using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
-using ShopKeepDB.Operations.Delete;
-using ShopKeepDB.StockGeneration;
+using ShopKeepDB.Operations.Retrievals;
 using ShopKeepDB.TransactionMisc;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -24,12 +22,12 @@ namespace ShopKeep.UI.Shop
     {
         private ShopKeepDB.Models.Shop _currentShop;
         private User _currentUser;
-        private ObservableCollection<ShopStock> _currentShopStock = new ObservableCollection<ShopStock>();
-        private ObservableCollection<BuyStock> _buyStock = new ObservableCollection<BuyStock>();
-        private ObservableCollection<UserItem> _userItems = new ObservableCollection<UserItem>();
-        private ObservableCollection<SaleItem> _saleItems = new ObservableCollection<SaleItem>();
-        private CoinTracker _coinLossTracker = new CoinTracker();
-        private CoinTracker _coinGainTracker = new CoinTracker();
+        private readonly ObservableCollection<ShopStock> _currentShopStock = new ObservableCollection<ShopStock>();
+        private readonly ObservableCollection<BuyStock> _buyStock = new ObservableCollection<BuyStock>();
+        private readonly ObservableCollection<UserItem> _userItems = new ObservableCollection<UserItem>();
+        private readonly ObservableCollection<SaleItem> _saleItems = new ObservableCollection<SaleItem>();
+        private readonly CoinTracker _coinLossTracker = new CoinTracker();
+        private readonly CoinTracker _coinGainTracker = new CoinTracker();
 
         public Shop()
         {
@@ -42,7 +40,7 @@ namespace ShopKeep.UI.Shop
             Tuple<ShopKeepDB.Models.Shop, User> args = (Tuple<ShopKeepDB.Models.Shop, User>)arguments.Parameter;
             _currentShop = args.Item1;
             _currentUser = args.Item2;
-            this.DataContext = this;
+            DataContext = this;
             PopulateRelevantCollections();
         }
 
@@ -54,13 +52,13 @@ namespace ShopKeep.UI.Shop
 
         private async Task PopulateShopStockAsync()
         {
-            var stock = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopStockGetter.GetShopStock(_currentShop.Id));
+            var stock = await Task.Run(() => ShopStockGetter.GetShopStock(_currentShop.Id));
             stock.ForEach(stockItem => _currentShopStock.Add(stockItem));
         }
 
         private async Task PopulateUserInventory()
         {
-            var inventory = await Task.Run(() => ShopKeepDB.Operations.Retrievals.UserItemGetter.GetUserItems(_currentUser.Name));
+            var inventory = await Task.Run(() => UserItemGetter.GetUserItems(_currentUser.Name));
             inventory.ForEach(item => _userItems.Add(item));
         }
 
@@ -74,15 +72,15 @@ namespace ShopKeep.UI.Shop
         /// </summary>
         private void AddToBuyList(object sender, RoutedEventArgs e)
         {
-            ShopStock selected = ShopStock.SelectedItem as ShopStock;
-            int amount = (int) BuyAmount.Value;
+            var selected = ShopStock.SelectedItem as ShopStock;
+            var amount = (int)BuyAmount.Value;
             if (selected == null || amount <= 0)
             {
                 PopupMessage.Message("No item selected, or an invalid amount entered.");
                 return;
             }
 
-            int inBuyAmount = 0;
+            var inBuyAmount = 0;
             var existingItem =
                 _buyStock.FirstOrDefault(buyStock => buyStock.OriginalShopStock.ItemId == selected.ItemId);
             if (existingItem != null)
@@ -94,7 +92,7 @@ namespace ShopKeep.UI.Shop
                 inBuyAmount = existingItem.Amount;
             }
             amount = (amount + inBuyAmount > selected.Amount) ? selected.Amount : amount + inBuyAmount;
-            BuyStock toBuy = new BuyStock(selected, amount);
+            var toBuy = new BuyStock(selected, amount);
             _buyStock.Add(toBuy);
             _coinLossTracker.UpdateValues(toBuy.TotalPriceGold, toBuy.TotalPriceSilver, toBuy.TotalPriceCopper);
             UpdateLossText();
@@ -107,10 +105,10 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            double userCoin = _currentUser.Coins.Gold + (double) _currentUser.Coins.Silver / 10 +
-                              (double) _currentUser.Coins.Copper / 100;
-            double coinLoss = _coinLossTracker.Gold + (double) _coinLossTracker.Silver / 10 +
-                              (double) _coinLossTracker.Copper / 100;
+            double userCoin = _currentUser.Coins.Gold + (double)_currentUser.Coins.Silver / 10 +
+                              (double)_currentUser.Coins.Copper / 100;
+            double coinLoss = _coinLossTracker.Gold + (double)_coinLossTracker.Silver / 10 +
+                              (double)_coinLossTracker.Copper / 100;
 
             if (userCoin - coinLoss < 0)
             {
@@ -138,12 +136,12 @@ namespace ShopKeep.UI.Shop
             {
                 PopupMessage.Message("Coin update failed. :-( Please, contact a system administrator.");
             }
-            this.GoldBalance.Text = _currentUser.Coins.Gold.ToString();
-            this.SilverBalance.Text = _currentUser.Coins.Silver.ToString();
-            this.CopperBalance.Text = _currentUser.Coins.Copper.ToString();
-            this.GoldLoss.Text = "0";
-            this.SilverLoss.Text = "0";
-            this.CopperLoss.Text = "0";
+            GoldBalance.Text = _currentUser.Coins.Gold.ToString();
+            SilverBalance.Text = _currentUser.Coins.Silver.ToString();
+            CopperBalance.Text = _currentUser.Coins.Copper.ToString();
+            GoldLoss.Text = "0";
+            SilverLoss.Text = "0";
+            CopperLoss.Text = "0";
             _buyStock.Clear();
             _userItems.Clear();
             _currentShopStock.Clear();
@@ -152,22 +150,22 @@ namespace ShopKeep.UI.Shop
 
         private void UpdateGainText()
         {
-            this.GoldGain.Text = _coinGainTracker.Gold.ToString();
-            this.SilverGain.Text = _coinGainTracker.Silver.ToString();
-            this.CopperGain.Text = _coinGainTracker.Copper.ToString();
+            GoldGain.Text = _coinGainTracker.Gold.ToString();
+            SilverGain.Text = _coinGainTracker.Silver.ToString();
+            CopperGain.Text = _coinGainTracker.Copper.ToString();
         }
 
         private void UpdateLossText()
         {
-            this.GoldLoss.Text = _coinLossTracker.Gold.ToString();
-            this.SilverLoss.Text = _coinLossTracker.Silver.ToString();
-            this.CopperLoss.Text = _coinLossTracker.Copper.ToString();
+            GoldLoss.Text = _coinLossTracker.Gold.ToString();
+            SilverLoss.Text = _coinLossTracker.Silver.ToString();
+            CopperLoss.Text = _coinLossTracker.Copper.ToString();
         }
 
         private void AddToSaleItems(object sender, RoutedEventArgs e)
         {
             UserItem item = InventoryView.SelectedItem as UserItem;
-            int amount = (int) SellAmount.Value;
+            int amount = (int)SellAmount.Value;
             if (item == null || amount <= 0)
             {
                 PopupMessage.Message("No item selected or invalid amount entered.");
@@ -223,12 +221,12 @@ namespace ShopKeep.UI.Shop
                 PopupMessage.Message("Coin update failed. Please, contact a system administrator.");
             }
 
-            this.GoldBalance.Text = _currentUser.Coins.Gold.ToString();
-            this.SilverBalance.Text = _currentUser.Coins.Silver.ToString();
-            this.CopperBalance.Text = _currentUser.Coins.Copper.ToString();
-            this.GoldGain.Text = "0";
-            this.SilverGain.Text = "0";
-            this.CopperGain.Text = "0";
+            GoldBalance.Text = _currentUser.Coins.Gold.ToString();
+            SilverBalance.Text = _currentUser.Coins.Silver.ToString();
+            CopperBalance.Text = _currentUser.Coins.Copper.ToString();
+            GoldGain.Text = "0";
+            SilverGain.Text = "0";
+            CopperGain.Text = "0";
             _saleItems.Clear();
             _userItems.Clear();
             _currentShopStock.Clear();

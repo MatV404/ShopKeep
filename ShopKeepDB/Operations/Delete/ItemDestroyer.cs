@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopKeepDB.Context;
+using ShopKeepDB.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ShopKeepDB.Context;
-using ShopKeepDB.Models;
-using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeepDB.Operations.Delete
 {
@@ -28,7 +26,9 @@ namespace ShopKeepDB.Operations.Delete
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is ArgumentException
+                                        or DbUpdateException
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }
@@ -52,7 +52,9 @@ namespace ShopKeepDB.Operations.Delete
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is ArgumentException
+                                        or DbUpdateException
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
-using System.Security.Policy;
 
 namespace ShopKeepDB.Operations.Credentials
 {
@@ -15,8 +12,8 @@ namespace ShopKeepDB.Operations.Credentials
                 using var hasher = new Rfc2898DeriveBytes(password, salt, Misc.Constants.IterationCount);
                 return hasher.GetBytes(Misc.Constants.HashSize);
             }
-            catch (Exception e) when (e is ArgumentException 
-                                        or ArgumentNullException 
+            catch (Exception e) when (e is ArgumentException
+                                        or ArgumentNullException
                                         or ArgumentOutOfRangeException)
             {
                 return null;
@@ -32,7 +29,7 @@ namespace ShopKeepDB.Operations.Credentials
                 random.GetBytes(salt = new byte[Misc.Constants.SaltSize]);
                 return salt;
             }
-            catch (Exception e) when (e is CryptographicException 
+            catch (Exception e) when (e is CryptographicException
                                         or ArgumentNullException)
             {
                 return null;

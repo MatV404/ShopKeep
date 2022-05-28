@@ -40,7 +40,7 @@
                    VerticalAlignment="Bottom"
                    FontSize="32"
                    Foreground="{ThemeResource HeadingColor}"
-                   Text="{x:Bind ExaminedItem.Name, Mode=TwoWay}" />
+                   Text="{x:Bind _examinedItem.Name, Mode=TwoWay}" />
 
         <TextBlock Grid.Row="1"
                    Grid.Column="1"
@@ -52,7 +52,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    FontSize="25"
-                   Text="{x:Bind ExaminedItem.BaseItemPrice.Gold, Mode=TwoWay}"
+                   Name="GoldPriceText"
+                   Text="{x:Bind _examinedItem.BaseItemPrice.Gold, Mode=TwoWay}"
                    Margin="10 0 0 0" />
 
         <TextBlock Grid.Row="2"
@@ -66,7 +67,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    FontSize="25"
-                   Text="{x:Bind ExaminedItem.BaseItemPrice.Silver, Mode=TwoWay}"
+                   Name="SilverPriceText"
+                   Text="{x:Bind _examinedItem.BaseItemPrice.Silver, Mode=TwoWay}"
                    Margin="10 0 0 0" />
 
         <TextBlock Grid.Row="3"
@@ -80,7 +82,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    FontSize="25"
-                   Text="{x:Bind ExaminedItem.BaseItemPrice.Copper, Mode=TwoWay}"
+                   Name="CopperPriceText"
+                   Text="{x:Bind _examinedItem.BaseItemPrice.Copper}"
                    Margin="10 0 0 0"/>
         <TextBlock Grid.Row="1"
                    Grid.Column="3"
@@ -93,7 +96,7 @@
                    VerticalAlignment="Center"
                    FontSize="25"
                    Name="RarityText"
-                   Text="{x:Bind ExaminedItem.Rarity}" />
+                   Text="{x:Bind _examinedItem.Rarity}" />
         <TextBlock Grid.Row="2"
                    Grid.Column="3"
                    HorizontalAlignment="Center"
@@ -104,7 +107,7 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
                    FontSize="25"
-                   Text="{x:Bind ExaminedItem.Id}" />
+                   Text="{x:Bind _examinedItem.Id}" />
         <TextBlock Grid.Row="4" 
                    Grid.Column="1" 
                    HorizontalAlignment="Left"
@@ -127,7 +130,7 @@
                       FontSize="20"
                       SelectionMode="Multiple"
                       Background="{ThemeResource InteractiveElementColor}"
-                      ItemsSource="{x:Bind ExaminedTypes}">
+                      ItemsSource="{x:Bind _examinedTypes}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:Type">
                         <TextBlock Text="{x:Bind Name}"
@@ -161,7 +164,7 @@
                        VerticalAlignment="Stretch"
                        TextWrapping="Wrap"
                        Name="DescriptionText"
-                       Text="{x:Bind ExaminedItem.Description}" />
+                       Text="{x:Bind _examinedItem.Description}" />
         </Frame>
         <controls:NumberBox Grid.Row="5"
                  Grid.Column="4"
@@ -169,6 +172,8 @@
                  Name="GoldPrice"
                  FontSize="25"
                  Width="200"
+                 Maximum="100000"
+                 Minimum="0"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Left" />
         <controls:NumberBox Grid.Row="6"
@@ -177,6 +182,8 @@
                  Name="SilverPrice"
                  FontSize="25"
                  Width="200"
+                 Maximum="9"
+                 Minimum="0"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Left" />
         <controls:NumberBox Grid.Row="7"
@@ -185,6 +192,8 @@
                  Name="CopperPrice"
                  FontSize="25"
                  Width="200"
+                 Maximum="9"
+                 Minimum="0"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Left"></controls:NumberBox>
         <ComboBox Grid.Row="5"

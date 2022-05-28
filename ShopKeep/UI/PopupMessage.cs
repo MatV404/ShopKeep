@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Popups;
 
 namespace ShopKeep.UI
 {
     internal static class PopupMessage
     {
+        /// <summary>
+        /// Generates a small popup message that displays the given dialogMessage and has a button to close the popup
+        /// labeled with cancelLabel.
+        /// </summary>
+        /// <param name="dialogMessage"></param>
+        /// <param name="cancelLabel"></param>
         public static async void Message(string dialogMessage, string cancelLabel = "Okay")
         {
             var messageDialog = new MessageDialog(dialogMessage);

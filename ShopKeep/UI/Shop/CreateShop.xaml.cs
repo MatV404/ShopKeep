@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using ShopKeep.UI.Admin;
+using ShopKeepDB.Misc;
+using ShopKeepDB.Models;
+using ShopKeepDB.Operations.Create;
+using ShopKeepDB.Operations.Retrievals;
 using ShopKeepDB.StockGeneration;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,8 +17,8 @@ namespace ShopKeep.UI.Shop
     /// </summary>
     public sealed partial class CreateShop : Page
     {
-        private readonly string[] _locales = ShopKeepDB.Misc.Constants.ShopLocales;
-        private List<ShopKeepDB.Models.Type> _types = new List<ShopKeepDB.Models.Type>();
+        private readonly string[] _locales = Constants.ShopLocales;
+        private readonly List<Type> _types = new List<Type>();
         public CreateShop()
         {
             InitializeComponent();
@@ -35,7 +27,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateTypes()
         {
-            var types = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
+            var types = await TypeGetter.GetAllTypesAsync();
             if (_types == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to retrieve all shop types. Please, refresh the page.");
@@ -53,7 +45,7 @@ namespace ShopKeep.UI.Shop
         {
             string shopName = ShopNameBox.Text;
             string ownerName = ShopOwnerBox.Text;
-            var shopType = (ShopKeepDB.Models.Type) ShopTypeBox.SelectedItem;
+            var shopType = (Type)ShopTypeBox.SelectedItem;
             string shopLocale = ShopLocaleBox.SelectedItem?.ToString();
             string shopDescription = ShopDescriptionBox.Text;
             bool generateStock = GenerateStockCheck.IsChecked ?? false;
@@ -63,7 +55,7 @@ namespace ShopKeep.UI.Shop
                 return;
             }
 
-            ShopKeepDB.Models.Shop result = await Task.Run(() => ShopKeepDB.Operations.Create.ShopCreator.CreateShopAsync(shopName, ownerName,
+            ShopKeepDB.Models.Shop result = await Task.Run(() => ShopCreator.CreateShopAsync(shopName, ownerName,
                 shopType.Id, shopLocale, shopDescription));
             if (result == null)
             {

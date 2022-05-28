@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ShopKeepDB.Misc;
+﻿using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Create;
 using ShopKeepDB.Operations.Retrievals;
-using Type = ShopKeepDB.Models.Type;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.StockGeneration
 {
     public class ItemGenerator
     {
-        private Dictionary<string, Tuple<int, int>> _chances;
-        private int _minPricePercentageDifference;
-        private int _maxPricePercentageDifference;
+        private readonly Dictionary<string, Tuple<int, int>> _chances;
+        private readonly int _minPricePercentageDifference;
+        private readonly int _maxPricePercentageDifference;
         private List<Item> _commonItems = null;
         private List<Item> _uncommonItems = null;
         private List<Item> _rareItems = null;
         private List<Item> _otherItems = null;
-        private Shop _shop;
-        private Random _generator;
+        private readonly Shop _shop;
+        private readonly Random _generator;
 
         private List<Item> DetermineItemPool(string rarity)
         {
@@ -66,8 +64,8 @@ namespace ShopKeepDB.StockGeneration
             {
                 return "Common";
             }
-            
-            if (_chances["Uncommon"].Item1 <= percentage 
+
+            if (_chances["Uncommon"].Item1 <= percentage
                 && percentage <= _chances["Uncommon"].Item2)
             {
                 return "Uncommon";
@@ -106,7 +104,7 @@ namespace ShopKeepDB.StockGeneration
                 int.MinValue, int.MaxValue,
                 int.MinValue, int.MaxValue);
         }
-        
+
         public ItemGenerator(Shop shop)
         {
             _generator = new Random();

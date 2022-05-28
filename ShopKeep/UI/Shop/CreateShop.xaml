@@ -58,6 +58,7 @@
                   Name="ShopTypeBox"
                   Header="Shop Type"
                   Width="200"
+                  IsTabStop="False"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
                   ItemsSource="{x:Bind _types}">

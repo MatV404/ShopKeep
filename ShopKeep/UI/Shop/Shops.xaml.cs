@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using ShopKeep.UI.Admin;
+using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
+using ShopKeepDB.Operations.Retrievals;
 using Type = ShopKeepDB.Models.Type;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -28,8 +19,8 @@ namespace ShopKeep.UI.Shop
     /// </summary>
     public sealed partial class Shops : Page
     {
-        private ObservableCollection<ShopKeepDB.Models.Shop> _shopCollection = new ObservableCollection<ShopKeepDB.Models.Shop>();
-        private string[] _locales = ShopKeepDB.Misc.Constants.ShopLocales;
+        private readonly ObservableCollection<ShopKeepDB.Models.Shop> _shopCollection = new ObservableCollection<ShopKeepDB.Models.Shop>();
+        private readonly string[] _locales = Constants.ShopLocales;
         private List<Type> _types;
         private User _currentUser;
 
@@ -42,7 +33,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateShopsAsync()
         {
-            var shops = await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopGetter.GetAllShopsAsync());
+            var shops = await Task.Run(() => ShopGetter.GetAllShopsAsync());
             foreach (var shop in shops)
             {
                 _shopCollection.Add(shop);
@@ -51,7 +42,7 @@ namespace ShopKeep.UI.Shop
 
         private async void PopulateTypesAsync()
         {
-            _types = await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesAsync());
+            _types = await Task.Run(() => TypeGetter.GetAllTypesAsync());
             if (_types == null)
             {
                 PopupMessage.Message("Something went wrong with the database while trying to load Types.");
@@ -75,9 +66,9 @@ namespace ShopKeep.UI.Shop
             string name = ShopName.Text;
             string owner = OwnerName.Text;
             string locale = ShopLocale.SelectedItem?.ToString();
-            int? typeId = ((Type) ShopType.SelectedItem)?.Id;
+            int? typeId = ((Type)ShopType.SelectedItem)?.Id;
             List<ShopKeepDB.Models.Shop> filteredShops =
-                await Task.Run(() => ShopKeepDB.Operations.Retrievals.ShopGetter.FilterShopsAsync(name, owner, typeId, locale));
+                await Task.Run(() => ShopGetter.FilterShopsAsync(name, owner, typeId, locale));
             _shopCollection.Clear();
             filteredShops.ForEach(shop => _shopCollection.Add(shop));
         }
@@ -97,14 +88,12 @@ namespace ShopKeep.UI.Shop
             if (!_currentUser.IsAdmin)
             {
                 Frame.Navigate(typeof(Shop),
-                    new Tuple<ShopKeepDB.Models.Shop, User>((ShopKeepDB.Models.Shop) ShopsView.SelectedItem,
+                    new Tuple<ShopKeepDB.Models.Shop, User>((ShopKeepDB.Models.Shop)ShopsView.SelectedItem,
                         _currentUser));
             }
             else
             {
-                Frame.Navigate(typeof(ShopAdmin),
-                    new Tuple<ShopKeepDB.Models.Shop, User>((ShopKeepDB.Models.Shop)ShopsView.SelectedItem,
-                        _currentUser));
+                Frame.Navigate(typeof(ShopAdmin), (ShopKeepDB.Models.Shop)ShopsView.SelectedItem);
             }
         }
     }

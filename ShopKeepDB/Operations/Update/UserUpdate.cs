@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Credentials;
+using System;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Update
 {
@@ -23,7 +19,9 @@ namespace ShopKeepDB.Operations.Update
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (DbException)
+            catch (Exception e) when (e is ArgumentException
+                                        or DbUpdateException
+                                        or DbUpdateConcurrencyException)
             {
                 return false;
             }
@@ -47,7 +45,8 @@ namespace ShopKeepDB.Operations.Update
                 await database.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e) when (e is DbUpdateException 
+            catch (Exception e) when (e is ArgumentException
+                                        or DbUpdateException
                                         or DbUpdateConcurrencyException)
             {
                 return false;

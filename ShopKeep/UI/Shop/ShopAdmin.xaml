@@ -178,6 +178,9 @@
                             Header="Amount"
                             FontSize="25"
                             Name="AmountItemBox"
+                            Maximum="20000"
+                            Minimum="1"
+                            Value="1"
                             Width="200"></controls:NumberBox>
         <controls:NumberBox Grid.Column="6"
                             Grid.Row="2"
@@ -186,6 +189,9 @@
                             Header="Gold Price"
                             FontSize="25"
                             Name="GoldPriceItemBox"
+                            Maximum="100000"
+                            Minimum="0"
+                            Value="0"
                             Width="200" />
         <controls:NumberBox Grid.Column="7"
                             Grid.Row="2"
@@ -193,6 +199,9 @@
                             VerticalAlignment="Stretch"
                             Header="Silver Price"
                             Name="SilverPriceItemBox"
+                            Maximum="9"
+                            Minimum="0"
+                            Value="0"
                             FontSize="25"
                             Width="200" />
         <controls:NumberBox Grid.Column="6"
@@ -202,6 +211,9 @@
                             VerticalAlignment="Stretch"
                             Header="Copper Price"
                             Name="CopperPriceItemBox"
+                            Maximum="9"
+                            Minimum="0"
+                            Value="0"
                             Width="200"></controls:NumberBox>
         <Button Grid.Column="6"
                 Grid.Row="4"
@@ -228,6 +240,7 @@
                  Header="Stock Amount"
                  Name="BuyAmount"
                  FontSize="25"
+                 Value="1"
                  Width="200"/>
 
         <Button Grid.Column="1"
@@ -270,6 +283,9 @@
                             FontSize="25"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
+                            Maximum="100000"
+                            Minimum="0"
+                            Value="0"
                             Name="NewGoldPriceBox" />
 
         <controls:NumberBox Grid.Row="6"
@@ -280,16 +296,22 @@
                  FontSize="25"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Stretch"
+                 Maximum="9"
+                 Minimum="0"
+                 Value="0"
                  Name="NewSilverPriceBox" />
 
         <controls:NumberBox Grid.Row="7"
                             Grid.Column="3"
                             Grid.ColumnSpan="2"
                             Width="200"
-                            Header="New Silver Price"
+                            Header="New Copper Price"
                             FontSize="25"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
+                            Maximum="9"
+                            Minimum="0"
+                            Value="0"
                             Name="NewCopperPriceBox" />
 
         <Button Grid.Row="7"

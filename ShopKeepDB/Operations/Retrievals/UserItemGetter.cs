@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopKeepDB.Context;
+using ShopKeepDB.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ShopKeepDB.Context;
-using ShopKeepDB.Models;
-using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeepDB.Operations.Retrievals
 {
@@ -15,11 +13,18 @@ namespace ShopKeepDB.Operations.Retrievals
     {
         public static async Task<List<UserItem>> GetUserItems(string userName)
         {
-            await using var database = new ShopKeepContext();
-            return await database.UserItem.Include(item => item.Item)
-                                          .ThenInclude(item => item.BaseItemPrice)
-                                          .Where(item => item.UserName == userName)
-                                          .ToListAsync();
+            try
+            {
+                await using var database = new ShopKeepContext();
+                return await database.UserItem.Include(item => item.Item)
+                                              .ThenInclude(item => item.BaseItemPrice)
+                                              .Where(item => item.UserName == userName)
+                                              .ToListAsync();
+            }
+            catch (ArgumentException)
+            {
+                return new List<UserItem>();
+            }
         }
 
         public static async Task<List<UserItem>> FilterUserItems(string userName, string itemName,
@@ -31,8 +36,8 @@ namespace ShopKeepDB.Operations.Retrievals
                 var items = database.UserItem.Include(item => item.Item)
                     .ThenInclude(item => item.BaseItemPrice)
                     .Where(item =>
-                        item.UserName == userName 
-                        && item.Item.Name.Contains(itemName) 
+                        item.UserName == userName
+                        && item.Item.Name.Contains(itemName)
                         && item.Item.Rarity == (itemRarity ?? item.Item.Rarity));
                 if (itemTypeId != null)
                 {
@@ -43,7 +48,8 @@ namespace ShopKeepDB.Operations.Retrievals
                 }
                 return await items.ToListAsync();
             }
-            catch (DbException)
+            catch (Exception e) when (e is ArgumentException
+                                        or ArgumentNullException)
             {
                 return null;
             }

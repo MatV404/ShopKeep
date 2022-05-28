@@ -16,7 +16,7 @@ namespace ShopKeep.UI.UserUI
     /// </summary>
     public sealed partial class Users : Page
     {
-        public ObservableCollection<User> UserList { get; set; } = new ObservableCollection<ShopKeepDB.Models.User>();
+        public ObservableCollection<User> UserList { get; set; } = new ObservableCollection<User>();
 
         public Users()
         {
@@ -53,7 +53,7 @@ namespace ShopKeep.UI.UserUI
         private async void FilterUsers(object sender, RoutedEventArgs e)
         {
             string userNameFilter = string.IsNullOrWhiteSpace(UserName.Text) ? "" : UserName.Text;
-            
+
             List<User> foundUsers = await Task.Run(() => UserGetter.FilterUsers(userNameFilter));
             if (foundUsers == null)
             {
@@ -63,13 +63,16 @@ namespace ShopKeep.UI.UserUI
             UserList.Clear();
             foreach (User user in foundUsers)
             {
-                UserList.Add(user);
+                if (!user.IsAdmin)
+                {
+                    UserList.Add(user);
+                }
             }
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Frame.Navigate(typeof(Inventory), new Tuple<User, bool>((User) UserView.SelectedItem, true));
+            Frame.Navigate(typeof(Inventory), new Tuple<User, bool>((User)UserView.SelectedItem, true));
         }
     }
 }

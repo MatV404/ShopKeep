@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShopKeepDB.Models
+﻿namespace ShopKeepDB.Models
 {
     public class ShopStockPrice
     {
@@ -18,6 +14,6 @@ namespace ShopKeepDB.Models
             Copper = copper;
         }
 
-        public ShopStockPrice()  { }
+        public ShopStockPrice() { }
     }
 }

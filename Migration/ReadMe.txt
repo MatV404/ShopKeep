@@ -1,0 +1,2 @@
+The given connectionstring in the appsettings should only be used for testing, but absolutely not for any production database.
+The password and username used is the default password and username for postgres!

@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
+using OverflowException = System.OverflowException;
 
 namespace ShopKeepDB.TransactionMisc
 {
-    public class CoinTracker : INotifyPropertyChanged
+    public class CoinTracker
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private int _gold = 0;
         private int _silver = 0;
         private int _copper = 0;
@@ -23,38 +14,26 @@ namespace ShopKeepDB.TransactionMisc
         public int Gold
         {
             get => _gold;
-            set
-            {
-                _gold = value;
-                OnPropertyChanged();
-            }
+            set => _gold = value;
         }
 
         public int Silver
         {
             get => _silver;
-            set
-            {
-                _silver = value;
-                OnPropertyChanged();
-            }
+            set => _silver = value;
         }
 
         public int Copper
         {
             get => _copper;
-            set
-            {
-                _copper = value;
-                OnPropertyChanged();
-            }
+            set => _copper = value;
         }
 
         public void UpdateValues(int gold, int silver, int copper)
         {
-            int copperChange = Copper;
-            int silverChange = Silver;
-            int goldChange = Gold;
+            var copperChange = Copper;
+            var silverChange = Silver;
+            var goldChange = Gold;
             copperChange += copper;
             if (copperChange > 10)
             {
@@ -62,31 +41,54 @@ namespace ShopKeepDB.TransactionMisc
                 copperChange %= 10;
             }
 
-            if (copperChange < 0)
+            try
             {
-                silverChange -= (-1 * copperChange) / 10;
-                copperChange = 10 - copperChange % 10;
+                checked
+                {
+
+                    if (copperChange < 0)
+                    {
+                        silverChange -= (-1 * copperChange) / 10;
+                        copperChange = 10 - copperChange % 10;
+                    }
+                }
+            }
+            catch (OverflowException)
+            {
+                copperChange = 0;
+                silverChange = 0;
             }
 
             silverChange += silver;
 
-            if (silverChange > 10)
+            try
             {
-                goldChange += silver / 10;
-                silverChange %= 10;
-            }
+                checked
+                {
+                    if (silverChange > 10)
+                    {
+                        goldChange += silver / 10;
+                        silverChange %= 10;
+                    }
 
-            if (silverChange < 0)
-            {
-                goldChange -= (-1 * silverChange) / 10;
-                silverChange = 10 - silverChange % 10;
-            }
+                    if (silverChange < 0)
+                    {
+                        goldChange -= (-1 * silverChange) / 10;
+                        silverChange = 10 - silverChange % 10;
+                    }
 
-            goldChange += gold;
-            
-            if (goldChange < 0)
+                    goldChange += gold;
+
+                    if (goldChange < 0)
+                    {
+                        goldChange = 0;
+                    }
+                }
+            }
+            catch (OverflowException)
             {
-                goldChange = 0;
+                silverChange = 0;
+                goldChange = int.MaxValue;
             }
 
             if (copperChange != _copper)

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using ShopKeepDB.Models;
+﻿using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Update;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Controls
 {

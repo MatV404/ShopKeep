@@ -43,7 +43,7 @@ namespace ShopKeep.Misc
                 await FileIO.WriteTextAsync(file, toWrite);
                 return Path.Combine(localFolder.Path, fileName);
             }
-            catch (Exception e) when (e is UnauthorizedAccessException 
+            catch (Exception e) when (e is UnauthorizedAccessException
                                       || e is NotSupportedException
                                       || e is ArgumentException
                                       || e is DirectoryNotFoundException

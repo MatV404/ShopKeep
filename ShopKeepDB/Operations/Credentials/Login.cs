@@ -1,9 +1,8 @@
-﻿using System;
-using System.Data.Common;
-using System.Threading.Tasks;
-using ShopKeepDB.Context;
+﻿using ShopKeepDB.Context;
 using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Credentials
 {
@@ -14,13 +13,13 @@ namespace ShopKeepDB.Operations.Credentials
             try
             {
                 await using var database = new ShopKeepContext();
-                await database.Database.EnsureCreatedAsync();
+
                 var user = await Retrievals.UserGetter.GetUserByUsername(username);
 
                 if (user == null)
                 {
                     return new Tuple<LoginResults, User>(LoginResults.Invalid, null);
-                } 
+                }
 
                 if (!Password.ValidateUserPassword(password, user.Salt, user.Password))
                 {
@@ -39,7 +38,7 @@ namespace ShopKeepDB.Operations.Credentials
 
                 return new Tuple<LoginResults, User>(LoginResults.User, user);
             }
-            catch (DbException)
+            catch (ArgumentException)
             {
                 return new Tuple<LoginResults, User>(LoginResults.DbError, null);
             }

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ShopKeepDB.Misc;
+﻿using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Update;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.TransactionMisc
 {
+    /// <summary>
+    /// Represents an UserItem ready to be sold.
+    /// </summary>
     public class SaleItem : TransactionItem
     {
-        private UserItem _originalUserItem;
+        private readonly UserItem _originalUserItem;
         public string OriginalUserItemName => _originalUserItem.Item.Name;
         public UserItem OriginalUserItem => _originalUserItem;
 

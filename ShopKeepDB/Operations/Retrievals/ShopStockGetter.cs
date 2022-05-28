@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Retrievals
 {
@@ -23,7 +20,7 @@ namespace ShopKeepDB.Operations.Retrievals
                                                .Where(stock => stock.ShopId == shopId)
                                                .ToListAsync();
             }
-            catch (DbException)
+            catch (ArgumentException)
             {
                 return new List<ShopStock>();
             }
@@ -31,8 +28,16 @@ namespace ShopKeepDB.Operations.Retrievals
 
         public static async Task<bool> ShopStockExistsAsync(int shopId, int itemId)
         {
-            await using var database = new ShopKeepContext();
-            return await database.ShopStock.FindAsync(shopId, itemId) != null;
+            try
+            {
+                await using var database = new ShopKeepContext();
+                return await database.ShopStock.FindAsync(shopId, itemId) != null;
+
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
         }
     }
 }

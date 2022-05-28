@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
-using ShopKeepDB.Misc;
+﻿using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Create;
 using ShopKeepDB.Operations.Delete;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.TransactionMisc
 {
     public class ShopPurchaseHandler
     {
-        private List<ShopStock> _toDelete;
-        private List<BuyStock> _updateFailed;
-        private List<BuyStock> _successfulPurchases;
-        private User _customer;
-        private ObservableCollection<BuyStock> _stock;
-        private CoinTracker _tracker;
+        private readonly List<ShopStock> _toDelete;
+        private readonly List<BuyStock> _updateFailed;
+        private readonly List<BuyStock> _successfulPurchases;
+        private readonly User _customer;
+        private readonly ObservableCollection<BuyStock> _stock;
+        private readonly CoinTracker _tracker;
 
         private async Task<bool> TransferItemsAsync()
         {
@@ -41,6 +39,11 @@ namespace ShopKeepDB.TransactionMisc
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// This method handles the purchase of items from a shop, indicating whether the item was
+        /// completely bought out, or some stock remains in the shop.
+        /// </summary>
+        /// <returns>Success on success, PartialSuccess if some transactions failed, Failure if a fatal error occurred.</returns>
         public async Task<BulkTransactionResult> HandlePurchaseAsync()
         {
             bool allSuccessful = true;

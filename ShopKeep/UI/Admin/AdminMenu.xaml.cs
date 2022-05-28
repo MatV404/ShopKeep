@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.UI.Item;
 using ShopKeep.UI.Shop;
@@ -26,7 +15,7 @@ namespace ShopKeep.UI.Admin
     /// </summary>
     public sealed partial class AdminMenu : Page
     {
-        private ShopKeepDB.Models.User _currentUser;
+        private User _currentUser;
 
         public AdminMenu()
         {
@@ -36,7 +25,7 @@ namespace ShopKeep.UI.Admin
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            _currentUser = arguments.Parameter as ShopKeepDB.Models.User;
+            _currentUser = arguments.Parameter as User;
         }
 
 

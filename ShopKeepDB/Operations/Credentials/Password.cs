@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ShopKeepDB.Operations.Credentials
 {
@@ -30,6 +28,13 @@ namespace ShopKeepDB.Operations.Credentials
             return new(base64Salt, base64HashedPassword);
         }
 
+        /// <summary>
+        /// Validates user password.
+        /// </summary>
+        /// <param name="password">The password entered in plaintext.</param>
+        /// <param name="salt">The user's salt stored in the database and in Base64 string form.</param>
+        /// <param name="hash">The hash of the user's password stored in the database and in Base64 string form.</param>
+        /// <returns></returns>
         public static bool ValidateUserPassword(string password, string salt, string hash)
         {
             var newHash = Hashing.CreateHash(password, Convert.FromBase64String(salt));

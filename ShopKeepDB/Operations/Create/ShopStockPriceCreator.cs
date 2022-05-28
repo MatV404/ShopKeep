@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Create
 {
@@ -20,7 +18,9 @@ namespace ShopKeepDB.Operations.Create
                 await database.SaveChangesAsync();
                 return newPrice;
             }
-            catch (DbException)
+            catch (Exception e) when (e is ArgumentException 
+                                        or DbUpdateException 
+                                        or DbUpdateConcurrencyException )
             {
                 return null;
             }

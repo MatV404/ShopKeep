@@ -13,7 +13,7 @@ namespace ShopKeepDB.Models
         public BaseItemPrice BaseItemPrice { get; set; } = null!;
 
         public List<ItemTypes> ItemTypes { get; set; } = new List<ItemTypes>();
-        public Item() {}
+        public Item() { }
 
         public Item(string name, string description, string rarity, BaseItemPrice price)
         {

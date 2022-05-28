@@ -1,24 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using ShopKeep.UI.Admin;
 using ShopKeepDB.Misc;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using ShopKeepDB.Operations.Delete;
+using ShopKeepDB.Operations.Retrievals;
+using ShopKeepDB.Operations.Update;
+using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeep.UI.Item
 {
@@ -28,10 +20,10 @@ namespace ShopKeep.UI.Item
     ///
     public sealed partial class ItemManagement : Page
     {
-        public ShopKeepDB.Models.Item ExaminedItem { get; private set; }
-        public List<ShopKeepDB.Models.Type> ExaminedTypes { get; private set; }
+        private ShopKeepDB.Models.Item _examinedItem;
+        private readonly ObservableCollection<Type> _examinedTypes = new ObservableCollection<Type>();
 
-        public ObservableCollection<string> Rarities { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> Rarities { get; } = new ObservableCollection<string>();
         public ItemManagement()
         {
             InitializeComponent();
@@ -43,15 +35,19 @@ namespace ShopKeep.UI.Item
 
         private async void PopulateExaminedTypes()
         {
-            ExaminedTypes =
-                await Task.Run(() => ShopKeepDB.Operations.Retrievals.TypeGetter.GetAllTypesByIdAsync(
-                    ExaminedItem.ItemTypes.Select(itemType => itemType.TypeId).ToList()));
+            var types = await TypeGetter.GetAllTypesByIdAsync(
+                                _examinedItem.ItemTypes.Select(itemType => itemType.TypeId).ToList());
+
+            foreach (var type in types)
+            {
+                _examinedTypes.Add(type);
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            ExaminedItem = arguments.Parameter as ShopKeepDB.Models.Item;
+            _examinedItem = arguments.Parameter as ShopKeepDB.Models.Item;
             PopulateExaminedTypes();
         }
 
@@ -59,30 +55,32 @@ namespace ShopKeep.UI.Item
         {
             Frame.GoBack();
         }
-        
+
         private async void EditItemAsync(object sender, RoutedEventArgs e)
         {
-            string itemName = String.IsNullOrWhiteSpace(ItemName.Text) ? ExaminedItem.Name : ItemName.Text;
+            string itemName = string.IsNullOrWhiteSpace(ItemName.Text) ? _examinedItem.Name : ItemName.Text;
             string itemRarity = ItemRarity.SelectionBoxItem == null
-                ? ExaminedItem.Rarity
+                ? _examinedItem.Rarity
                 : ItemRarity.SelectionBoxItem.ToString();
-            string itemDescription = String.IsNullOrWhiteSpace(ItemDescription.Text) ? ExaminedItem.Description : ItemDescription.Text;
-            int goldPrice = GoldPrice.Value >= 0 
-                ? (int) GoldPrice.Value 
-                : ExaminedItem.BaseItemPrice.Gold;
-            int silverPrice = SilverPrice.Value >= 0
-                ? (int) SilverPrice.Value
-                : ExaminedItem.BaseItemPrice.Silver;
-            int copperPrice = CopperPrice.Value >= 0
-                ? (int) CopperPrice.Value
-                : ExaminedItem.BaseItemPrice.Copper;
-            var item = await Task.Run(() => ShopKeepDB.Operations.Update.ItemUpdate.UpdateItemAsync(ExaminedItem, itemName, itemRarity, 
+            string itemDescription = string.IsNullOrWhiteSpace(ItemDescription.Text) 
+                ? _examinedItem.Description 
+                : ItemDescription.Text;
+            int goldPrice = (int)(GoldPrice.Value >= 0 ? GoldPrice.Value : 0);
+            int silverPrice = (int)(SilverPrice.Value >= 0 ? SilverPrice.Value : 0);
+            int copperPrice = (int)(CopperPrice.Value >= 0 ? CopperPrice.Value : 0);
+            
+            if (goldPrice == 0 && silverPrice == 0 && copperPrice == 0)
+            {
+                PopupMessage.Message("Price can't be set to 0!");
+                return;
+            }
+            var item = await Task.Run(() => ItemUpdate.UpdateItemAsync(_examinedItem, itemName, itemRarity,
                                                                           itemDescription, goldPrice, silverPrice, copperPrice));
-            this.CopperPrice.Value = item.BaseItemPrice.Copper;
-            this.SilverPrice.Value = item.BaseItemPrice.Silver;
-            this.GoldPrice.Value = item.BaseItemPrice.Gold;
-            this.RarityText.Text = item.Rarity;
-            this.DescriptionText.Text = item.Description;
+            CopperPriceText.Text = item.BaseItemPrice.Copper.ToString();
+            SilverPriceText.Text = item.BaseItemPrice.Silver.ToString();
+            GoldPriceText.Text = item.BaseItemPrice.Gold.ToString();
+            RarityText.Text = item.Rarity;
+            DescriptionText.Text = item.Description;
         }
 
         private async void RemoveTypesFromItemAsync(object sender, RoutedEventArgs e)
@@ -94,15 +92,20 @@ namespace ShopKeep.UI.Item
             }
 
             List<int> selectedTypeIds = new List<int>();
-            foreach (ShopKeepDB.Models.Type item in Types.SelectedItems)
+            foreach (Type item in Types.SelectedItems)
             {
                 selectedTypeIds.Add(item.Id);
             }
 
-            var result = await Task.Run(() => ShopKeepDB.Operations.Delete.ItemTypeRemover.RemoveItemTypes(ExaminedItem.Id, selectedTypeIds));
+            var result = await Task.Run(() => ItemTypeRemover.RemoveItemTypes(_examinedItem.Id, selectedTypeIds));
             if (!result)
             {
                 PopupMessage.Message("Something went wrong while removing types.", "What a shame.");
+            }
+
+            foreach (Type item in Types.SelectedItems)
+            {
+                _examinedTypes.Remove(item);
             }
         }
     }

@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
-using ShopKeepDB.Misc;
+﻿using ShopKeepDB.Misc;
 using ShopKeepDB.Models;
 using ShopKeepDB.Operations.Create;
 using ShopKeepDB.Operations.Delete;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.TransactionMisc
 {
     public class ShopSaleHandler
     {
-        private List<UserItem> _toDelete;
-        private List<SaleItem> _updateFailed;
-        private List<SaleItem> _successfulSales;
-        private Shop _shop;
-        private ObservableCollection<SaleItem> _toSell;
-        private CoinTracker _tracker;
+        private readonly List<UserItem> _toDelete;
+        private readonly List<SaleItem> _updateFailed;
+        private readonly List<SaleItem> _successfulSales;
+        private readonly Shop _shop;
+        private readonly ObservableCollection<SaleItem> _toSell;
+        private readonly CoinTracker _tracker;
 
         private Task DeductFailedTransactionsFromCoin()
         {
@@ -30,6 +28,12 @@ namespace ShopKeepDB.TransactionMisc
 
             return Task.CompletedTask;
         }
+
+        /// <summary>
+        /// Deals with the sale of the item, signalling that it's either completely sold,
+        /// or only some of the user item's amount was sold.
+        /// </summary>
+        /// <returns>Success on success, PartialSuccess if some transactions failed, Failure if a fatal error occurred.</returns>
         public async Task<BulkTransactionResult> HandleSaleAsync()
         {
             bool allSuccessful = true;

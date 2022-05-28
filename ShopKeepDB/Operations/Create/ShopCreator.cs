@@ -1,9 +1,8 @@
-﻿using System;
-using System.Data.Common;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
 using ShopKeepDB.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ShopKeepDB.Operations.Create
 {
@@ -29,7 +28,9 @@ namespace ShopKeepDB.Operations.Create
                 await database.SaveChangesAsync();
                 return newShop;
             }
-            catch (Exception e) when (e is DbUpdateException or DbUpdateConcurrencyException)
+            catch (Exception e) when (e is ArgumentException 
+                                        or DbUpdateException 
+                                        or DbUpdateConcurrencyException)
             {
                 return null;
             }

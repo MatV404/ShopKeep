@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopKeepDB.Context;
-using ShopKeepDB.Models;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Type = ShopKeepDB.Models.Type;
 
 namespace ShopKeepDB.Operations.Retrievals
@@ -21,16 +17,22 @@ namespace ShopKeepDB.Operations.Retrievals
                 await using var database = new ShopKeepContext();
                 return await database.Type.ToListAsync();
             }
-            catch (DbException)
+            catch (ArgumentException)
             {
-                return null;
+                return new List<Type>();
             }
         }
 
         public static async Task<List<Type>> GetAllTypesByIdAsync(List<int> typeIds)
         {
-            await using var database = new ShopKeepContext();
-            return await database.Type.Where(type => typeIds.Contains(type.Id)).ToListAsync();
+            try {
+                await using var database = new ShopKeepContext();
+                return await database.Type.Where(type => typeIds.Contains(type.Id)).ToListAsync();
+            }
+            catch (ArgumentException)
+            {
+                return new List<Type>();
+            }
         }
     }
 }

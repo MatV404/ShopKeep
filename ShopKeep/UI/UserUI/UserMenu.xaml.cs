@@ -3,18 +3,16 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using ShopKeep.UI.Shop;
+using ShopKeepDB.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace ShopKeep.UI.UserUI
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class UserMenu : Page
     {
 
-        private ShopKeepDB.Models.User _currentUser;
+        private User _currentUser;
 
         public UserMenu()
         {
@@ -24,7 +22,7 @@ namespace ShopKeep.UI.UserUI
         protected override void OnNavigatedTo(NavigationEventArgs arguments)
         {
             base.OnNavigatedTo(arguments);
-            _currentUser = (ShopKeepDB.Models.User) arguments.Parameter;
+            _currentUser = (User)arguments.Parameter;
         }
 
         private void ViewShopsClick(object sender, RoutedEventArgs e)
@@ -39,7 +37,7 @@ namespace ShopKeep.UI.UserUI
 
         private void ViewInventoryClick(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(Inventory), new Tuple<ShopKeepDB.Models.User, bool>(_currentUser, false));
+            Frame.Navigate(typeof(Inventory), new Tuple<User, bool>(_currentUser, false));
         }
 
         private void ChangePasswordClick(object sender, RoutedEventArgs e)

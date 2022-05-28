@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ShopKeepDB.Models;
-using ShopKeepDB.Operations.Credentials;
+using ShopKeepDB.Operations.Update;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,7 +15,7 @@ namespace ShopKeep.UI
     public sealed partial class ChangePassword : Page
     {
 
-        private ShopKeepDB.Models.User _currentUser;
+        private User _currentUser;
         public ChangePassword()
         {
             InitializeComponent();
@@ -52,7 +41,7 @@ namespace ShopKeep.UI
                 return;
             }
 
-            if (!await Task.Run(() => ShopKeepDB.Operations.Update.UserUpdate.ChangeUserPassword(_currentUser, newPass)))
+            if (!await Task.Run(() => UserUpdate.ChangeUserPassword(_currentUser, newPass)))
             {
                 PopupMessage.Message("Password update failed.");
                 return;

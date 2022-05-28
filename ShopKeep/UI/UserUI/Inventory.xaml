@@ -53,6 +53,8 @@
                  Name="GoldBox"
                  FontSize="25"
                  Width="200"
+                 Maximum="100000"
+                 Minimum="0"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Stretch" />
         <controls:NumberBox Grid.Row="3"
@@ -61,6 +63,8 @@
                  Name="SilverBox"
                  FontSize="25"
                  Width="200"
+                 Maximum="9"
+                 Minimum="0"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Stretch" />
         <controls:NumberBox Grid.Row="4"
@@ -69,6 +73,8 @@
                  Name="CopperBox"
                  FontSize="25"
                  Width="200"
+                 Maximum="9"
+                 Minimum="0"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Stretch" />
         <Button Grid.Column="2"
@@ -86,6 +92,7 @@
                  Name="ItemAmountBox"
                  FontSize="25"
                  Width="200"
+                 Maximum="2147483647"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Left" />
         <Button Grid.Row="8"

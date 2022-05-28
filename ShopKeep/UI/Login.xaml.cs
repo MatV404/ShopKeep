@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Security;
 using System.Threading.Tasks;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using ShopKeep.UI.Admin;
 using ShopKeep.UI.UserUI;
 using ShopKeepDB.Misc;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace ShopKeep.UI
 {
@@ -22,11 +17,11 @@ namespace ShopKeep.UI
 
         private async void LoginSubmit(object sender, RoutedEventArgs e)
         {
-            this.LoginButton.IsEnabled = false;
-            this.RegisterButton.IsEnabled = false;
+            LoginButton.IsEnabled = false;
+            RegisterButton.IsEnabled = false;
             string userName = Username.Text;
             string userPass = Password.Password;
-            if (String.IsNullOrWhiteSpace(userName) || String.IsNullOrWhiteSpace(userPass))
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(userPass))
             {
                 PopupMessage.Message("Login failed - both username and password must be filled out.");
                 return;
@@ -34,8 +29,8 @@ namespace ShopKeep.UI
 
             var loginResult =
                 await Task.Run(() => ShopKeepDB.Operations.Credentials.Login.ValidateLoginAsync(userName, userPass));
-            this.LoginButton.IsEnabled = true;
-            this.RegisterButton.IsEnabled = true;
+            LoginButton.IsEnabled = true;
+            RegisterButton.IsEnabled = true;
             switch (loginResult.Item1)
             {
                 case LoginResults.Banned:
@@ -48,7 +43,7 @@ namespace ShopKeep.UI
                     Frame.Navigate(typeof(UserMenu), loginResult.Item2);
                     return;
                 case LoginResults.Invalid:
-                    PopupMessage.Message("Invalid credentials entered.");
+                    PopupMessage.Message("Invalid credentials entered or a database error occurred.");
                     return;
                 case LoginResults.DbError:
                     PopupMessage.Message("Database error. Please, contact the administrator.");

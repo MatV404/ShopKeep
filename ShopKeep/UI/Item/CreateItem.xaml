@@ -53,6 +53,8 @@
                             FontSize="20"
                             Width="200"
                             PlaceholderText="0"
+                            Maximum="100000"
+                            Minimum="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Height="80"></controls:NumberBox>
@@ -65,6 +67,9 @@
                             VerticalAlignment="Bottom"
                             HorizontalAlignment="Left"
                             Width="200"
+                            Maximum="9"
+                            Minimum="0"
+                            Height="80"
                             PlaceholderText="0"/>
 
         <controls:NumberBox Name="ItemPriceCopperBox"
@@ -75,6 +80,8 @@
                             VerticalAlignment="Bottom"
                             HorizontalAlignment="Left"
                             Width="200"
+                            Maximum="9"
+                            Minimum="0"
                             Height="80"
                             PlaceholderText="0"></controls:NumberBox>
 

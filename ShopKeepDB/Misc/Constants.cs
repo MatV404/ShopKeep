@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ShopKeepDB.Misc
 {
     public static class Constants
     {
-        public static readonly string[] Rarities = {"Common", "Uncommon", "Rare", "Other"};
-        public static readonly string[] ShopLocales = {"Other", "Rural", "Town", "City", "Metropolitan"};
+        // Item rarity constants
+        public static readonly string[] Rarities = { "Common", "Uncommon", "Rare", "Other" };
+        // Shop locale constants
+        public static readonly string[] ShopLocales = { "Other", "Rural", "Town", "City", "Metropolitan" };
+
+        //Password hashing constants
         public const int SaltSize = 32;
         public const int HashSize = 32;
         public const int IterationCount = 1000;
 
+
+        //ShopStock Generation Constants
         public static Dictionary<string, Dictionary<string, Tuple<int, int>>> ItemChances = new()
         {
             {
-                "Other", new Dictionary<string, Tuple<int, int>>()
+                "Other",
+                new Dictionary<string, Tuple<int, int>>()
                 {
                     {"Common", new Tuple<int, int>(0, 70)},
                     {"Uncommon", new Tuple<int, int>(71, 96)},
@@ -24,7 +30,8 @@ namespace ShopKeepDB.Misc
                 }
             },
             {
-                "Rural", new Dictionary<string, Tuple<int, int>>()
+                "Rural",
+                new Dictionary<string, Tuple<int, int>>()
                 {
                     {"Common", new Tuple<int, int>(0, 65)},
                     {"Uncommon", new Tuple<int, int>(66, 96)},
@@ -33,7 +40,8 @@ namespace ShopKeepDB.Misc
                 }
             },
             {
-                "Town", new Dictionary<string, Tuple<int, int>>()
+                "Town",
+                new Dictionary<string, Tuple<int, int>>()
                 {
                     {"Common", new Tuple<int, int>(0, 62)},
                     {"Uncommon", new Tuple<int, int>(63, 92)},
@@ -42,7 +50,8 @@ namespace ShopKeepDB.Misc
                 }
             },
             {
-                "City", new Dictionary<string, Tuple<int, int>>()
+                "City",
+                new Dictionary<string, Tuple<int, int>>()
                 {
                     {"Common", new Tuple<int, int>(0, 50)},
                     {"Uncommon", new Tuple<int, int>(51, 85)},
@@ -51,7 +60,8 @@ namespace ShopKeepDB.Misc
                 }
             },
             {
-                "Metropolitan", new Dictionary<string, Tuple<int, int>>()
+                "Metropolitan",
+                new Dictionary<string, Tuple<int, int>>()
                 {
                     {"Common", new Tuple<int, int>(0, 45)},
                     {"Uncommon", new Tuple<int, int>(46, 80)},
@@ -63,11 +73,11 @@ namespace ShopKeepDB.Misc
 
         public static Dictionary<string, Tuple<int, int>> PricePercentageDifferencePerLocale = new()
         {
-            {"Other", new Tuple<int, int>(0, 15)},
-            {"Rural", new Tuple<int, int>(0, 10)},
-            {"Town", new Tuple<int, int>(5, 10)},
-            {"City", new Tuple<int, int>(10, 10)},
-            {"Metropolitan", new Tuple<int, int>(15, 10)},
+            { "Other", new Tuple<int, int>(0, 15) },
+            { "Rural", new Tuple<int, int>(0, 10) },
+            { "Town", new Tuple<int, int>(5, 10) },
+            { "City", new Tuple<int, int>(10, 10) },
+            { "Metropolitan", new Tuple<int, int>(15, 10) },
         };
     }
 }
