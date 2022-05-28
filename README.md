@@ -1,6 +1,6 @@
 # ShopKeep
 
-This is a small project I did primarily for school, combining both my one of my hobbies (the tabletop roleplaying game Dungeons and Dragons) as well as my passion
+This is a small project I did primarily for school, combining one of my hobbies (the tabletop roleplaying game Dungeons and Dragons) as well as my passion
 for programming.
 
 The main objective of this application was to provide me with the automatization of 'fantasy shop generation', meaning that I would only have to press a button to
